@@ -62,7 +62,7 @@
             <span class="dash-empty-icon">📝</span>
             <h3 class="mt-4">Assessment Not Yet Completed</h3>
             <p class="text-muted max-w-md mx-auto mt-2">Take the Class 12 stream assessment to generate your personalized 3–5 Careers Worth Exploring.</p>
-            <button class="primary-btn mt-6" data-view="assessment">Start Assessment Now →</button>
+            <button class="primary-btn mt-6" data-view="assessment">Start Exploring →</button>
           </div>
         ` : ''}
 
@@ -167,6 +167,16 @@
         }
       });
     }
+
+    // Attach listeners for all data-view navigation buttons inside Dashboard
+    document.querySelectorAll('#mainAppContainer [data-view]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const view = e.currentTarget.getAttribute('data-view');
+        if (view && onNavigate) {
+          onNavigate(view);
+        }
+      });
+    });
 
     document.querySelectorAll('[data-dash-experience]').forEach(btn => {
       btn.addEventListener('click', (e) => {
