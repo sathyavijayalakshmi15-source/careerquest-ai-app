@@ -25,12 +25,30 @@
       window.CQ_PARTICLES.initParticlesCanvas();
     }
 
-    // 3. Render initial view
+    // 3. Attach Global Delegated Click Listener for All data-view buttons
+    document.addEventListener('click', function(e) {
+      const targetBtn = e.target.closest('[data-view]');
+      if (targetBtn) {
+        const view = targetBtn.getAttribute('data-view');
+        if (view) {
+          e.preventDefault();
+          if (view === 'assessment' && (!appState.stream || targetBtn.id === 'dashStartExploringBtn')) {
+            appState.assessmentStep = 1;
+          }
+          navigateTo(view);
+        }
+      }
+    });
+
+    // 4. Render initial view
     renderApp();
   }
 
   function navigateTo(viewName) {
     appState.currentView = viewName;
+    if (viewName === 'assessment' && !appState.stream) {
+      appState.assessmentStep = 1;
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
     renderApp();
   }
@@ -67,6 +85,11 @@
         break;
 
       case "assessment":
+        // Fallback check to prevent invalid step
+        if (!appState.assessmentStep || appState.assessmentStep < 1 || appState.assessmentStep > 5) {
+          appState.assessmentStep = 1;
+        }
+
         contentHtml = window.CQ_ASSESSMENT ? window.CQ_ASSESSMENT.renderAssessment(appState.assessmentStep, appState) : "";
         mainContainer.innerHTML = contentHtml;
         if (window.CQ_ASSESSMENT) {
