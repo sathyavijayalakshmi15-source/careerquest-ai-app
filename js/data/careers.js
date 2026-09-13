@@ -244,6 +244,49 @@ window.CAREERS_DATABASE = [
     beginnerActivities: ["Learn human muscular & skeletal movement mechanics", "Volunteer at physical rehab centers"],
     relatedCareers: ["medicine", "biomedical_eng"]
   },
+  {
+    id: "nursing",
+    name: "Nursing & Patient Care Services",
+    category: "Medical & Healthcare",
+    streamCompatibility: ["pcb", "pcmb"],
+    description: "Providing compassionate patient care, clinical monitoring, critical care assistance, and healthcare hospital administration.",
+    whySuited: "High empathy, dedication to direct patient care, clinical stamina, and passion for healthcare support.",
+    relevantSubjects: ["Biology", "Anatomy & Physiology", "Chemistry"],
+    usefulSkills: ["Patient Monitoring", "Clinical Care", "Empathy & Communication", "First Aid & Triage"],
+    degreePathways: ["B.Sc Nursing (4 Years)", "GNM (General Nursing & Midwifery)"],
+    entranceExams: ["NEET-UG", "AIIMS Nursing Entrance", "State Nursing CETs"],
+    beginnerActivities: ["Learn vital sign measurement techniques", "Volunteer with community health initiatives"],
+    relatedCareers: ["medicine", "physiotherapy"]
+  },
+  {
+    id: "dentistry",
+    name: "Dental Surgery & Oral Healthcare (BDS)",
+    category: "Medical & Healthcare",
+    streamCompatibility: ["pcb", "pcmb"],
+    description: "Diagnosing, treating, and operating on dental and oral health conditions, cosmetic dentistry, and maxillo-facial surgery.",
+    whySuited: "Focus on human anatomy, fine motor precision, patient care, oral health science, and clinical practice.",
+    relevantSubjects: ["Biology", "Human Anatomy", "Chemistry", "Oral Pathology"],
+    usefulSkills: ["Surgical Precision", "Patient Counseling", "Diagnostic Aptitude", "Attention to Detail"],
+    degreePathways: ["BDS (Bachelor of Dental Surgery - 5 Years)"],
+    entranceExams: ["NEET-UG"],
+    beginnerActivities: ["Study dental anatomy charts", "Observe clinical hygiene and oral diagnostic methods"],
+    relatedCareers: ["medicine", "pharmacy"]
+  },
+  {
+    id: "public_health",
+    name: "Public Health & Epidemiology",
+    category: "Medical & Healthcare",
+    streamCompatibility: ["pcb", "pcmb", "arts", "commerce"],
+    description: "Analyzing disease outbreak trends, managing community health initiatives, health policy strategy, and global health research.",
+    whySuited: "Interest in healthcare combined with data analytics, social impact, population trends, and health policy.",
+    relevantSubjects: ["Biostatistics", "Epidemiology", "Public Health", "Social Sciences"],
+    usefulSkills: ["Data Analysis", "Health Policy", "Community Outreach", "Outbreak Tracking"],
+    degreePathways: ["B.Sc Public Health", "BSPH -> MPH (Master of Public Health)"],
+    entranceExams: ["CUET", "University Entrance Tests"],
+    beginnerActivities: ["Analyze WHO global health trend dashboards", "Study vaccination outbreak control case studies"],
+    relatedCareers: ["medicine", "public_policy", "data_science"]
+  },
+
 
   // --- DEFENCE & UNIFORMED SERVICES (SEPARATED PROFILES) ---
   {

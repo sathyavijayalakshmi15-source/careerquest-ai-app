@@ -9,6 +9,7 @@
     extracurriculars: [],
     strengths: [],
     preferences: [],
+    avoidances: [],
     recommendations: null,
     assessmentCompleted: false,
     completedChallenges: [],
@@ -127,6 +128,8 @@
                 isValid = (appState.strengths || []).length >= 1;
               } else if (currentStep === 4 + streamQuestions.length) {
                 isValid = (appState.preferences || []).length >= 1;
+              } else if (currentStep === 5 + streamQuestions.length) {
+                isValid = (appState.avoidances || []).length >= 1;
               }
 
               if (!isValid) {
@@ -181,6 +184,7 @@
               appState.extracurriculars = [];
               appState.strengths = [];
               appState.preferences = [];
+              appState.avoidances = [];
               appState.assessmentStep = 1;
               renderApp();
             }
@@ -281,7 +285,8 @@
         streamAnswers: appState.streamAnswers,
         extracurriculars: appState.extracurriculars,
         strengths: appState.strengths,
-        preferences: appState.preferences
+        preferences: appState.preferences,
+        avoidances: appState.avoidances
       });
 
       appState.recommendations = recommendations;
@@ -294,6 +299,7 @@
         extracurriculars: appState.extracurriculars,
         strengths: appState.strengths,
         preferences: appState.preferences,
+        avoidances: appState.avoidances,
         recommendations,
         assessmentCompleted: true
       });

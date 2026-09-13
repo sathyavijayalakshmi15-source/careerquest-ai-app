@@ -3,7 +3,7 @@
 (function() {
   function getAssessmentTotalSteps(stream) {
     const streamQuestions = (window.STREAM_QUESTIONS && stream && window.STREAM_QUESTIONS[stream]) || [];
-    return 1 + streamQuestions.length + 3; // Stream + Stream Questions + Extras + Strengths + Prefs
+    return 1 + streamQuestions.length + 4; // Stream + Stream Questions + Extras + Strengths + Prefs + Avoidances
   }
 
   function renderAssessment(currentStep, assessmentState = {}) {
@@ -13,6 +13,7 @@
       extracurriculars = [],
       strengths = [],
       preferences = [],
+      avoidances = [],
       showValidation = false,
       showRestartModal = false,
       navDirection = "next"
@@ -24,7 +25,7 @@
     const progressPercent = Math.round((safeStep / totalSteps) * 100);
 
     // Determine current question type & data
-    let currentQType = "stream"; // "stream", "stream_q", "extras", "strengths", "prefs"
+    let currentQType = "stream"; // "stream", "stream_q", "extras", "strengths", "prefs", "avoidances"
     let currentStreamQ = null;
     let isCurrentStepValid = false;
 
@@ -44,6 +45,9 @@
     } else if (safeStep === 4 + streamQuestions.length) {
       currentQType = "prefs";
       isCurrentStepValid = (preferences || []).length >= 1;
+    } else if (safeStep === 5 + streamQuestions.length) {
+      currentQType = "avoidances";
+      isCurrentStepValid = (avoidances || []).length >= 1;
     }
 
     let stepTitle = "";
@@ -201,6 +205,37 @@
       `;
     }
 
+    // -------------------------------------------------------------
+    // WHAT WOULD YOU RATHER AVOID?
+    // -------------------------------------------------------------
+    else if (currentQType === "avoidances") {
+      stepTitle = "What would you rather avoid?";
+      stepSubtitle = "Select tasks or environments you do NOT enjoy (important negative signals).";
+
+      const optionsHtml = (window.AVOIDANCE_OPTIONS || []).map((item, idx) => {
+        const isSelected = (avoidances || []).includes(item.id);
+        return `
+          <button type="button" 
+                  class="quiz-option-btn multi-quiz-option pref-quiz-option stagger-item ${isSelected ? 'selected' : ''}" 
+                  data-avoid-ans="${item.id}" 
+                  aria-pressed="${isSelected}"
+                  style="animation-delay: ${idx * 0.035}s">
+            <div class="quiz-option-icon-badge">${item.icon}</div>
+            <div class="quiz-option-content flex-1 text-left">
+              <span class="quiz-option-title">${item.label}</span>
+            </div>
+            <div class="quiz-check-indicator">${isSelected ? '✓' : '+'}</div>
+          </button>
+        `;
+      }).join("");
+
+      stepContentHtml = `
+        <div class="quiz-options-grid col-2" id="quizOptionsContainer">
+          ${optionsHtml}
+        </div>
+      `;
+    }
+
     // Slide transition animation
     const slideAnimClass = navDirection === "back" ? "quiz-slide-back" : "quiz-slide-next";
 
@@ -324,6 +359,15 @@
         hideValidationBanner();
         const ansId = e.currentTarget.getAttribute('data-pref-ans');
         if (onToggleAnswer) onToggleAnswer('preferences', ansId);
+      });
+    });
+
+    // Avoidance Choice
+    document.querySelectorAll('[data-avoid-ans]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        hideValidationBanner();
+        const ansId = e.currentTarget.getAttribute('data-avoid-ans');
+        if (onToggleAnswer) onToggleAnswer('avoidances', ansId);
       });
     });
 

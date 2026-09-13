@@ -121,8 +121,19 @@ window.PREFERENCES_OPTIONS = [
   { id: "aviation_pilot_pref", label: "Flying commercial aircraft", icon: "✈️" },
   { id: "business_entrepreneurship", label: "Business, markets & startups", icon: "📈" },
   { id: "teaching_explaining", label: "Teaching & sharing knowledge", icon: "📚" },
-  { id: "high_responsibility", label: "High-responsibility roles", icon: "🚀" }
+// Avoidance Options (Negative / Dislike Signals)
+window.AVOIDANCE_OPTIONS = [
+  { id: "avoid_patient_care", label: "Patient-facing work", icon: "🚫" },
+  { id: "avoid_field_outdoor", label: "Heavy field/outdoor work", icon: "🚫" },
+  { id: "avoid_desk_computer", label: "Mostly desk/computer work", icon: "🚫" },
+  { id: "avoid_repetitive", label: "Highly repetitive work", icon: "🚫" },
+  { id: "avoid_public_speaking", label: "Public speaking", icon: "🚫" },
+  { id: "avoid_high_pressure", label: "High-pressure environments", icon: "🚫" },
+  { id: "avoid_numbers", label: "Working with numbers", icon: "🚫" },
+  { id: "avoid_machines", label: "Working with machines", icon: "🚫" },
+  { id: "no_avoidance_pref", label: "No strong preference", icon: "✅" }
 ];
+
 
 // Stream-Specific Assessment Questionnaire Modules
 window.STREAM_QUESTIONS = {

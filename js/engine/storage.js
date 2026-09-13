@@ -9,6 +9,7 @@
     extracurriculars: [],
     strengths: [],
     preferences: [],
+    avoidances: [],
     recommendations: null,
     assessmentCompleted: false,
     completedChallenges: [],

@@ -31,6 +31,22 @@
     const careerCardsHtml = topMatches.map((item, index) => {
       const { career, matchPercent, reasons } = item;
 
+      let matchTierLabel = "Strong Match to Explore";
+      if (item.matchScore >= 75) {
+        matchTierLabel = "Strong Match to Explore";
+      } else if (item.matchScore >= 55) {
+        matchTierLabel = "Good Match to Explore";
+      } else if (item.matchScore >= 35) {
+        matchTierLabel = "Worth Exploring";
+      } else {
+        matchTierLabel = "Another Pathway to Consider";
+      }
+
+      const selectedCount = (state.streamAnswers || []).length + (state.strengths || []).length + (state.preferences || []).length;
+      if (selectedCount <= 2 && item.matchScore < 45) {
+        matchTierLabel = "Limited signals — worth exploring";
+      }
+
       const reasonsHtml = reasons.map(r => `
         <li><span class="reason-bullet">✦</span> ${r}</li>
       `).join("");
@@ -56,8 +72,8 @@
           <div class="match-card-header">
             <div class="match-badge-group">
               <span class="rank-num">#0${index + 1}</span>
-              <span class="match-type-pill">Strong Match to Explore</span>
-              <span class="match-score-tag">${matchPercent}% Match Fit</span>
+              <span class="match-type-pill">${matchTierLabel}</span>
+              <span class="match-score-tag">${matchPercent} Match Fit</span>
             </div>
             <span class="career-category-tag">${career.category}</span>
           </div>
