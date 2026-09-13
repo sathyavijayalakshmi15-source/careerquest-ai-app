@@ -97,6 +97,7 @@
             onSelectStream: (streamId) => {
               appState.stream = streamId;
               appState.streamAnswers = [];
+              appState.showValidation = false;
               renderApp();
             },
             onToggleAnswer: (key, id) => {
@@ -104,6 +105,7 @@
               if (list.has(id)) list.delete(id);
               else list.add(id);
               appState[key] = Array.from(list);
+              appState.showValidation = false;
               renderApp();
             },
             onNext: () => {
@@ -116,16 +118,24 @@
               else if (appState.assessmentStep === 5) isValid = (appState.preferences || []).length >= 1;
 
               if (!isValid) {
+                appState.showValidation = true;
+                renderApp();
                 const banner = document.getElementById('quizValidationBanner');
+                const container = document.getElementById('quizOptionsContainer');
                 if (banner) {
                   banner.classList.remove('hidden');
                   banner.classList.remove('pulse-error');
                   void banner.offsetWidth;
                   banner.classList.add('pulse-error');
                 }
+                if (container) {
+                  container.classList.add('validation-highlight');
+                }
                 return;
               }
 
+              appState.showValidation = false;
+              appState.navDirection = 'next';
               if (appState.assessmentStep < 5) {
                 appState.assessmentStep++;
                 renderApp();
@@ -136,11 +146,14 @@
             },
             onBack: () => {
               if (appState.assessmentStep > 1) {
+                appState.showValidation = false;
+                appState.navDirection = 'back';
                 appState.assessmentStep--;
                 renderApp();
               }
             },
             onClear: () => {
+              appState.showValidation = false;
               if (appState.assessmentStep === 1) appState.stream = "";
               if (appState.assessmentStep === 2) appState.streamAnswers = [];
               if (appState.assessmentStep === 3) appState.extracurriculars = [];
