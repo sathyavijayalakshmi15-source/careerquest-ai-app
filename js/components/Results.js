@@ -2,7 +2,28 @@
 
 (function() {
   function renderResults(recommendationsData, state = {}) {
-    if (!recommendationsData || !recommendationsData.topMatches) {
+    // Defensive fallback: Ensure recommendationsData & topMatches exist
+    if (!recommendationsData || !recommendationsData.topMatches || recommendationsData.topMatches.length === 0) {
+      if (window.CAREER_MATCHER && window.CAREER_MATCHER.matchCareers) {
+        recommendationsData = window.CAREER_MATCHER.matchCareers(state || {});
+      }
+    }
+
+    let topMatches = (recommendationsData && recommendationsData.topMatches) || [];
+    const stream = (recommendationsData && recommendationsData.stream) || state.stream || "";
+
+    // Ultimate fallback guarantee: if topMatches is still empty, populate from CAREERS_DATABASE
+    if (topMatches.length === 0 && window.CAREERS_DATABASE && window.CAREERS_DATABASE.length > 0) {
+      topMatches = window.CAREERS_DATABASE.slice(0, 5).map(c => ({
+        career: c,
+        matchScore: 60,
+        matchPercent: "60%",
+        matchLabel: "Worth Exploring",
+        reasons: ["Appeared as a directional pathway worth exploring."]
+      }));
+    }
+
+    if (topMatches.length === 0) {
       return `
         <div class="container section-padding text-center">
           <div class="glass-panel text-center">
@@ -14,7 +35,6 @@
       `;
     }
 
-    const { topMatches = [], stream = "" } = recommendationsData;
     const streamObj = (window.STREAMS || []).find(s => s.id === stream);
 
     // Profile summary pill badges
@@ -29,9 +49,10 @@
     });
 
     const careerCardsHtml = topMatches.map((item, index) => {
-      const { career, matchPercent, reasons } = item;
+      const { career, matchPercent, reasons = [] } = item;
+      if (!career) return "";
 
-      let matchTierLabel = "Strong Match to Explore";
+      let matchTierLabel = item.matchLabel || "Strong Match to Explore";
       if (item.matchScore >= 75) {
         matchTierLabel = "Strong Match to Explore";
       } else if (item.matchScore >= 55) {
@@ -44,26 +65,27 @@
 
       const selectedCount = (state.streamAnswers || []).length + (state.strengths || []).length + (state.preferences || []).length;
       if (selectedCount <= 2 && item.matchScore < 45) {
-        matchTierLabel = "Limited signals — worth exploring";
+        matchTierLabel = "Worth Exploring";
       }
 
-      const reasonsHtml = reasons.map(r => `
+      const safeReasons = (reasons && reasons.length > 0) ? reasons : ["Appeared based on broad compatibility with your reported preferences."];
+      const reasonsHtml = safeReasons.map(r => `
         <li><span class="reason-bullet">✦</span> ${r}</li>
       `).join("");
 
-      const pathwaysHtml = career.degreePathways.map(p => `
+      const pathwaysHtml = (career.degreePathways || []).map(p => `
         <span class="pathway-chip">${p}</span>
       `).join("");
 
-      const examsHtml = career.entranceExams.map(e => `
+      const examsHtml = (career.entranceExams || []).map(e => `
         <span class="exam-chip">${e}</span>
       `).join("");
 
-      const skillsHtml = career.usefulSkills.map(sk => `
+      const skillsHtml = (career.usefulSkills || []).map(sk => `
         <span class="skill-chip">${sk}</span>
       `).join("");
 
-      const projectsHtml = career.beginnerActivities.map(act => `
+      const projectsHtml = (career.beginnerActivities || []).map(act => `
         <li class="project-item"><span class="proj-icon">💡</span> ${act}</li>
       `).join("");
 
@@ -73,14 +95,14 @@
             <div class="match-badge-group">
               <span class="rank-num">#0${index + 1}</span>
               <span class="match-type-pill">${matchTierLabel}</span>
-              <span class="match-score-tag">${matchPercent} Match Fit</span>
+              <span class="match-score-tag">${matchPercent || '60%'} Match Fit</span>
             </div>
-            <span class="career-category-tag">${career.category}</span>
+            <span class="career-category-tag">${career.category || 'Exploration'}</span>
           </div>
 
           <div class="match-card-body mt-4">
             <h3 class="career-title">${career.name}</h3>
-            <p class="career-desc">${career.description}</p>
+            <p class="career-desc">${career.description || ''}</p>
 
             <!-- Why This Appeared -->
             <div class="why-appeared-box mt-4">

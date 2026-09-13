@@ -736,6 +736,9 @@ window.CAREERS_DATABASE = [
     usefulSkills: ["Sustainability Planning", "Clean Energy Tech", "Environmental Impact Assessment", "Project Management"],
     degreePathways: ["B.Tech Environmental / Renewable Energy", "B.Sc Sustainability Studies"],
     entranceExams: ["JEE Main", "CUET", "State CETs"],
+    beginnerActivities: ["Design a solar micro-grid simulation model", "Audit home/school energy consumption efficiency"],
+    relatedCareers: ["civil_structural", "biomedical_eng"]
+  },
   // --- PERFORMING ARTS & FILM MEDIA ---
   {
     id: "actor_performer",
