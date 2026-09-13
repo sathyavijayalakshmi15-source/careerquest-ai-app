@@ -1,4 +1,4 @@
-// CAREERQUEST AI - Comprehensive Career Database (50+ Careers across 13 Sectors)
+// CAREERQUEST AI - Comprehensive Career Database (Distinct Profiles across 13 Sectors)
 
 window.CAREERS_DATABASE = [
   // --- TECHNOLOGY ---
@@ -6,7 +6,7 @@ window.CAREERS_DATABASE = [
     id: "cs_software",
     name: "Software Engineering & Systems Architecture",
     category: "Technology",
-    streamCompatibility: ["cs_maths", "pcm", "pcmb"],
+    streamCompatibility: ["cs_maths", "pcm", "pcmb", "vocational"],
     description: "Architecting, designing, and engineering scalable software applications, Operating Systems, cloud solutions, and algorithms.",
     whySuited: "Strong affinity for programming, logical problem solving, building digital products, and structured algorithmic thinking.",
     relevantSubjects: ["Computer Science", "Mathematics", "Logical Reasoning"],
@@ -48,7 +48,7 @@ window.CAREERS_DATABASE = [
     id: "cybersecurity",
     name: "Cybersecurity & Ethical Hacking",
     category: "Technology",
-    streamCompatibility: ["cs_maths", "pcm"],
+    streamCompatibility: ["cs_maths", "pcm", "vocational"],
     description: "Protecting critical digital infrastructure, networks, and software applications against cyber threats, breaches, and security exploits.",
     whySuited: "Curiosity about network protocols, defensive security, ethical hacking, and high-stakes problem solving.",
     relevantSubjects: ["Computer Science", "Networking", "Mathematics"],
@@ -72,21 +72,49 @@ window.CAREERS_DATABASE = [
     beginnerActivities: ["Build an Arduino or Raspberry Pi robot vehicle", "Simulate circuits on Tinkercad"],
     relatedCareers: ["mechanical", "ai_ml", "aerospace"]
   },
+  {
+    id: "vocational_tech_it",
+    name: "Applied Information Technology & Digital Operations",
+    category: "Technology",
+    streamCompatibility: ["vocational", "cs_maths", "commerce"],
+    description: "Managing enterprise IT operations, cloud hosting infrastructure, web maintenance, and technical software support.",
+    whySuited: "Practical hands-on tech skills, digital troubleshooting, and applied software execution.",
+    relevantSubjects: ["Computer Applications", "Information Technology", "Web Systems"],
+    usefulSkills: ["Web Administration", "Hardware/Network Setup", "Troubleshooting", "Python/HTML"],
+    degreePathways: ["B.Voc Software Development / IT", "BCA", "Diploma in Computer Applications"],
+    entranceExams: ["CUET-UG", "State Vocational CETs"],
+    beginnerActivities: ["Deploy a website on Netlify/Vercel", "Set up a local Linux server"],
+    relatedCareers: ["cs_software", "cybersecurity", "ui_ux_design"]
+  },
 
   // --- ENGINEERING ---
   {
     id: "aerospace",
-    name: "Aerospace & Aeronautical Engineering",
+    name: "Aerospace & Space Systems Engineering",
     category: "Engineering",
     streamCompatibility: ["pcm", "cs_maths", "pcmb"],
-    description: "Designing, manufacturing, and testing aircraft, satellites, propulsion systems, rockets, and space exploration tech.",
-    whySuited: "Fascination with flight mechanics, propulsion, fluid dynamics, space tech, and heavy physics modeling.",
-    relevantSubjects: ["Physics", "Mathematics", "Aerodynamics"],
+    description: "Designing, manufacturing, and testing spacecraft, satellites, propulsion systems, rockets, and space exploration tech.",
+    whySuited: "Fascination with space tech, propulsion, orbital mechanics, rockets, and heavy physics modeling.",
+    relevantSubjects: ["Physics", "Mathematics", "Space Mechanics"],
     usefulSkills: ["CAD Modeling", "Thermodynamics", "Structural Analysis", "Physics Reasoning"],
-    degreePathways: ["B.Tech Aerospace Engineering", "B.Tech Aeronautical Engineering", "B.Sc Avionics"],
+    degreePathways: ["B.Tech Aerospace Engineering", "BS-MS Space Science at IIST"],
     entranceExams: ["JEE Main / Advanced", "IIST Admission Test", "BITSAT"],
-    beginnerActivities: ["Design model gliders or RC aircraft", "Learn OpenRocket simulation software"],
-    relatedCareers: ["military_aviation", "mechanical", "defence_tech"]
+    beginnerActivities: ["Design model rockets", "Learn OpenRocket simulation software"],
+    relatedCareers: ["aeronautical_eng", "astrophysics", "avionics"]
+  },
+  {
+    id: "aeronautical_eng",
+    name: "Aeronautical Engineering & Aircraft Design",
+    category: "Engineering",
+    streamCompatibility: ["pcm", "cs_maths", "pcmb"],
+    description: "Engineering commercial and military aircraft structures, jet engines, aerodynamics, and airframe mechanics.",
+    whySuited: "Deep focus on aircraft design, aerodynamics, jet propulsion, and flight structural physics.",
+    relevantSubjects: ["Physics", "Mathematics", "Aerodynamics"],
+    usefulSkills: ["CFD Aerodynamic Simulation", "Jet Propulsion", "Structural Physics"],
+    degreePathways: ["B.Tech Aeronautical Engineering"],
+    entranceExams: ["JEE Main / Advanced", "BITSAT"],
+    beginnerActivities: ["Study wind tunnel airflow dynamics", "Simulate airfoils in XFLR5"],
+    relatedCareers: ["aerospace", "aircraft_maintenance", "avionics"]
   },
   {
     id: "mechanical",
@@ -100,7 +128,7 @@ window.CAREERS_DATABASE = [
     degreePathways: ["B.Tech Mechanical Engineering", "B.Tech Automotive Engineering"],
     entranceExams: ["JEE Main / Advanced", "BITSAT", "State CETs"],
     beginnerActivities: ["Deconstruct & analyze engine mechanisms", "Learn 3D CAD modeling software"],
-    relatedCareers: ["aerospace", "robotics_automation"]
+    relatedCareers: ["aerospace", "robotics_automation", "applied_mechanics_tech"]
   },
   {
     id: "civil_structural",
@@ -129,6 +157,20 @@ window.CAREERS_DATABASE = [
     entranceExams: ["JEE Main", "VITEEE", "CUET"],
     beginnerActivities: ["Learn how ECG & MRI sensors record signals", "Explore bio-material advancements"],
     relatedCareers: ["biotechnology", "healthtech_manager", "medicine"]
+  },
+  {
+    id: "applied_mechanics_tech",
+    name: "Applied Mechanical Systems & Industrial Maintenance",
+    category: "Engineering",
+    streamCompatibility: ["vocational", "pcm"],
+    description: "Operating, maintaining, and troubleshooting industrial machinery, automated production lines, engines, and mechanical equipment.",
+    whySuited: "Practical mechanical aptitude, hands-on tool usage, machinery maintenance, and practical engineering trade execution.",
+    relevantSubjects: ["Applied Mechanics", "Workshop Practice", "Engineering Drawing"],
+    usefulSkills: ["Machinery Repair", "Hydraulics/Pneumatics", "Equipment Diagnostics", "Safety Protocols"],
+    degreePathways: ["B.Voc Mechanical Technology", "Diploma in Mechanical Engineering", "Industrial Training (ITI / Polytechnic)"],
+    entranceExams: ["State Vocational CETs", "Polytechnic Entrance"],
+    beginnerActivities: ["Disassemble and repair small engine/pump assemblies", "Study hydraulic valve circuits"],
+    relatedCareers: ["mechanical", "aircraft_maintenance", "robotics_automation"]
   },
 
   // --- MEDICAL & HEALTHCARE ---
@@ -203,20 +245,48 @@ window.CAREERS_DATABASE = [
     relatedCareers: ["medicine", "biomedical_eng"]
   },
 
-  // --- DEFENCE & UNIFORMED SERVICES ---
+  // --- DEFENCE & UNIFORMED SERVICES (SEPARATED PROFILES) ---
   {
-    id: "defence_officer",
-    name: "Commissioned Defence Officer (Army / Navy / Air Force)",
+    id: "defence_army",
+    name: "Indian Army Officer (Combat & Tactical Command)",
     category: "Defence",
     streamCompatibility: ["pcm", "pcb", "pcmb", "cs_maths", "commerce", "arts", "vocational"],
-    description: "Leading military operations, tactical defence forces, strategic security, and command leadership in the Indian Armed Forces.",
-    whySuited: "High discipline, physical endurance, leadership, patriot spirit, teamwork, and decision-making under pressure.",
-    relevantSubjects: ["General Knowledge", "Mathematics", "Physics", "Leadership"],
-    usefulSkills: ["Strategic Decision Making", "Leadership", "Physical Fitness", "Crisis Management"],
+    description: "Commanding land military forces, tactical infantry operations, border defense, and strategic combat units of the Indian Army.",
+    whySuited: "Explicit passion for Army command, ground tactical leadership, physical courage, discipline, and uniformed service.",
+    relevantSubjects: ["General Studies", "Mathematics", "Physics", "Tactical Leadership"],
+    usefulSkills: ["Command Leadership", "Tactical Decision Making", "Physical Fitness", "Crisis Management"],
     degreePathways: ["NDA (National Defence Academy)", "CDS (Combined Defence Services) after Graduation"],
-    entranceExams: ["NDA Examination (UPSC)", "CDS Examination (UPSC)", "AFCAT"],
-    beginnerActivities: ["Participate in NCC / NSS activities", "Practice SSB interview officer-like qualities"],
-    relatedCareers: ["military_aviation", "defence_tech", "civil_services"]
+    entranceExams: ["NDA Examination (UPSC)", "CDS Examination (UPSC)"],
+    beginnerActivities: ["Participate in NCC Army Wing drills", "Study Indian Army battle history & tactics"],
+    relatedCareers: ["defence_navy", "defence_airforce", "civil_services"]
+  },
+  {
+    id: "defence_navy",
+    name: "Indian Navy Officer (Executive & Marine Operations)",
+    category: "Defence",
+    streamCompatibility: ["pcm", "pcmb", "cs_maths"],
+    description: "Commanding naval warships, submarine operations, ocean surveillance, and maritime defense of India's sea frontiers.",
+    whySuited: "Specific interest in naval warfare, warship mechanics, maritime navigation, ocean command, and disciplined service.",
+    relevantSubjects: ["Physics", "Mathematics", "Nautical Science", "Naval Electronics"],
+    usefulSkills: ["Warship Navigation", "Maritime Strategy", "Leadership at Sea", "Crisis Control"],
+    degreePathways: ["NDA Naval Wing", "Indian Navy B.Tech Cadet Entry Scheme", "CDS Navy Entry"],
+    entranceExams: ["NDA Exam", "Navy B.Tech Entry", "CDS Exam"],
+    beginnerActivities: ["Participate in NCC Naval Wing", "Study warship mechanics and naval maneuvers"],
+    relatedCareers: ["defence_army", "merchant_navy_deck", "marine_engineering"]
+  },
+  {
+    id: "defence_airforce",
+    name: "Indian Air Force Flying & Technical Officer",
+    category: "Defence",
+    streamCompatibility: ["pcm", "cs_maths", "pcmb"],
+    description: "Flying fighter jets, transport aircraft, or engineering IAF radar, missile defence, and air combat avionics.",
+    whySuited: "Specific commitment to Air Force aerial combat, military aviation, supreme reflexes, and aerospace defense.",
+    relevantSubjects: ["Physics", "Mathematics", "Avionics", "Radar Tech"],
+    usefulSkills: ["Aerial Warfare", "Aviation Avionics", "Physical Fitness", "Extreme Focus"],
+    degreePathways: ["Air Force Academy Flying/Technical Branch via NDA / AFCAT"],
+    entranceExams: ["NDA Exam (Air Force Wing)", "AFCAT Flying/Technical", "CPSS Test"],
+    beginnerActivities: ["Participate in NCC Air Wing", "Study IAF fighter jet specifications"],
+    relatedCareers: ["military_aviation", "defence_tech", "commercial_pilot"]
   },
   {
     id: "defence_tech",
@@ -230,37 +300,51 @@ window.CAREERS_DATABASE = [
     degreePathways: ["B.Tech Technical Entry Scheme (TES) in Army/Navy", "DRDO Research Entry"],
     entranceExams: ["JEE Main", "TES Entry", "AFCAT Technical"],
     beginnerActivities: ["Explore RF signal communication principles", "Build encryption/decryption scripts"],
-    relatedCareers: ["cybersecurity", "aerospace", "defence_officer"]
+    relatedCareers: ["cybersecurity", "aerospace", "defence_airforce"]
   },
 
-  // --- AVIATION ---
+  // --- AVIATION (SEPARATED PROFILES) ---
   {
     id: "commercial_pilot",
     name: "Commercial Aviation Pilot",
     category: "Aviation",
     streamCompatibility: ["pcm", "cs_maths", "pcmb"],
     description: "Piloting commercial passenger jets, cargo aircraft, flight navigation, and managing international flight safety.",
-    whySuited: "High spatial orientation, quick decision making under pressure, interest in flight mechanics, and disciplined focus.",
+    whySuited: "Specific commitment to becoming a commercial pilot, cockpit spatial orientation, flight mechanics, and disciplined flight focus.",
     relevantSubjects: ["Physics", "Mathematics", "Aviation Meteorology", "Navigation"],
-    usefulSkills: ["Spatial Awareness", "Cockpit Management", "Decision Making", "English Communication"],
-    degreePathways: ["CPL Training (Commercial Pilot License) at Flying Clubs / IGRUA"],
-    entranceExams: ["IGRUA Entrance Exam", "DGCA Theory Exams", "Cadet Pilot Program Selection"],
-    beginnerActivities: ["Practice flight simulation on X-Plane/MSFS", "Learn basic aviation radio telephony"],
-    relatedCareers: ["military_aviation", "aerospace"]
+    usefulSkills: ["Cockpit Management", "Spatial Awareness", "Radio Telephony", "Decision Making"],
+    degreePathways: ["Commercial Pilot License (CPL) Training at Flying Clubs / IGRUA"],
+    entranceExams: ["IGRUA Entrance Exam", "DGCA Theory Exams", "Cadet Pilot Selection"],
+    beginnerActivities: ["Practice flight simulation on X-Plane/MSFS", "Study DGCA air navigation regulations"],
+    relatedCareers: ["aircraft_maintenance", "avionics", "military_aviation"]
   },
   {
-    id: "military_aviation",
-    name: "Fighter & Military Transport Pilot",
+    id: "aircraft_maintenance",
+    name: "Aircraft Maintenance Engineering (AME) & Aviation Systems",
+    category: "Aviation",
+    streamCompatibility: ["pcm", "cs_maths", "vocational", "pcmb"],
+    description: "Inspecting, servicing, and certifying commercial aircraft engines, hydraulic landing gear, and structural safety systems.",
+    whySuited: "Hands-on mechanical interest in aircraft machinery, engine maintenance, safety protocols, and aviation hardware.",
+    relevantSubjects: ["Physics", "Mathematics", "Aircraft Mechanics"],
+    usefulSkills: ["Turbine Repair", "Avionics Maintenance", "Safety Certification", "Diagnostics"],
+    degreePathways: ["AME Licence Course (DGCA approved Institute)", "B.Sc Aircraft Maintenance"],
+    entranceExams: ["AME CET", "University Entrance"],
+    beginnerActivities: ["Learn jet engine turbine maintenance workflows", "Study aircraft maintenance manuals"],
+    relatedCareers: ["applied_mechanics_tech", "avionics", "mechanical"]
+  },
+  {
+    id: "avionics",
+    name: "Avionics & Flight Electronics Engineering",
     category: "Aviation",
     streamCompatibility: ["pcm", "cs_maths", "pcmb"],
-    description: "Flying high-performance fighter jets, tactical transport aircraft, and helicopters for the Indian Air Force or Naval Air Arm.",
-    whySuited: "Supreme reflexes, spatial awareness, intense discipline, patriot commitment, and aerial combat aptitude.",
-    relevantSubjects: ["Physics", "Mathematics", "Avionics"],
-    usefulSkills: ["Aerial Navigation", "Tactical Warfare", "Physical Fitness", "Extreme Focus"],
-    degreePathways: ["Air Force Academy Flying Branch via NDA / AFCAT / NCC Special Entry"],
-    entranceExams: ["NDA Exam", "AFCAT Flying Branch", "CPSS (Computerised Pilot Selection System)"],
-    beginnerActivities: ["Train physical endurance & spatial agility", "Study IAF fighter aircraft specifications"],
-    relatedCareers: ["commercial_pilot", "defence_officer", "aerospace"]
+    description: "Designing radar navigation systems, autopilot flight computers, cockpit displays, and satellite telemetry for aircraft.",
+    whySuited: "Interest in flight electronics, embedded software, radar communications, and autopilot computer systems.",
+    relevantSubjects: ["Physics", "Electronics", "Computer Science", "Mathematics"],
+    usefulSkills: ["Avionics Circuitry", "Embedded Software", "Radar Signal Processing", "Autopilot Logic"],
+    degreePathways: ["B.Tech Avionics / Electronics Engineering"],
+    entranceExams: ["JEE Main", "IIST Entrance", "BITSAT"],
+    beginnerActivities: ["Simulate flight telemetry algorithms in Python", "Learn cockpit glass-display data feeds"],
+    relatedCareers: ["aerospace", "defence_tech", "aircraft_maintenance"]
   },
 
   // --- COMMERCE & FINANCE ---
@@ -320,6 +404,20 @@ window.CAREERS_DATABASE = [
     beginnerActivities: ["Study business models of UPI, Zerodha, or Stripe", "Draft a lean canvas startup idea"],
     relatedCareers: ["financial_analyst", "product_mgmt", "cs_software"]
   },
+  {
+    id: "vocational_biz_mgmt",
+    name: "Applied Business Operations & Retail Management",
+    category: "Commerce & Finance",
+    streamCompatibility: ["vocational", "commerce"],
+    description: "Managing retail store operations, supply chain logistics, customer relations, small business management, and sales execution.",
+    whySuited: "Practical business execution, sales acumen, customer communication, and commercial operations.",
+    relevantSubjects: ["Business Practice", "Retail Management", "Sales & Marketing"],
+    usefulSkills: ["Inventory Control", "Customer Service", "Sales Strategy", "Operations"],
+    degreePathways: ["B.Voc Retail Management / Business", "BBA", "Diploma in Business Admin"],
+    entranceExams: ["CUET-UG", "State CETs"],
+    beginnerActivities: ["Create a retail product pricing grid", "Study local small business distribution channels"],
+    relatedCareers: ["fintech_entrepreneurship", "product_mgmt"]
+  },
 
   // --- LAW & GOVERNMENT ---
   {
@@ -348,7 +446,7 @@ window.CAREERS_DATABASE = [
     degreePathways: ["Any Bachelor's Degree (BA / B.Sc / B.Tech / B.Com) followed by UPSC CSE"],
     entranceExams: ["UPSC Civil Services Examination (Prelims, Mains & Interview)"],
     beginnerActivities: ["Read daily editorial analysis of national newspapers", "Study Indian Constitution basics"],
-    relatedCareers: ["public_policy", "defence_officer"]
+    relatedCareers: ["public_policy", "corporate_law"]
   },
   {
     id: "public_policy",
@@ -436,7 +534,7 @@ window.CAREERS_DATABASE = [
     degreePathways: ["B.Des (Bachelor of Design in User Experience / Communication Design)", "B.Sc Digital Art"],
     entranceExams: ["UCEED (IIT)", "NID DAT", "NIFT"],
     beginnerActivities: ["Redesign an existing mobile app interface on Figma", "Create visual UI component collections"],
-    relatedCareers: ["graphic_design", "product_mgmt", "cs_software"]
+    relatedCareers: ["applied_design_media", "product_mgmt", "cs_software"]
   },
   {
     id: "journalism_media",
@@ -478,7 +576,21 @@ window.CAREERS_DATABASE = [
     degreePathways: ["BA Media Studies", "BBA Digital Marketing", "B.Sc Visual Communication"],
     entranceExams: ["CUET", "University Entrance Exams"],
     beginnerActivities: ["Edit YouTube/Instagram micro-documentaries", "Build a personal portfolio brand"],
-    relatedCareers: ["journalism_media", "ui_ux_design"]
+    relatedCareers: ["journalism_media", "ui_ux_design", "applied_design_media"]
+  },
+  {
+    id: "applied_design_media",
+    name: "Digital Media & Applied Graphic Design",
+    category: "Creative & Media",
+    streamCompatibility: ["vocational", "arts", "commerce"],
+    description: "Creating commercial graphic designs, brand logos, digital media assets, promotional video graphics, and visual layouts.",
+    whySuited: "Applied visual creativity, digital design tool usage (Photoshop/Illustrator/Figma), and practical media execution.",
+    relevantSubjects: ["Digital Design", "Visual Arts", "Computer Graphics"],
+    usefulSkills: ["Graphic Design", "Logo Vectorization", "Photoshop/Illustrator", "Visual Layout"],
+    degreePathways: ["B.Voc Graphic & Digital Media", "Diploma in Graphic Design"],
+    entranceExams: ["CUET-UG", "NIFT"],
+    beginnerActivities: ["Design a commercial brand poster", "Create vector icon sets on Illustrator"],
+    relatedCareers: ["ui_ux_design", "content_creation"]
   },
 
   // --- MARITIME ---
@@ -494,7 +606,7 @@ window.CAREERS_DATABASE = [
     degreePathways: ["B.Tech Marine Engineering (4 Years IMU approved)"],
     entranceExams: ["IMU-CET (Indian Maritime University Common Entrance Test)"],
     beginnerActivities: ["Learn marine engine working cycles", "Study global maritime shipping routes"],
-    relatedCareers: ["merchant_navy_deck", "mechanical", "defence_officer"]
+    relatedCareers: ["merchant_navy_deck", "mechanical", "defence_navy"]
   },
   {
     id: "merchant_navy_deck",
@@ -508,7 +620,7 @@ window.CAREERS_DATABASE = [
     degreePathways: ["B.Sc Nautical Science (3 Years)"],
     entranceExams: ["IMU-CET", "Sponsorship Selection by Shipping Lines"],
     beginnerActivities: ["Learn nautical chart reading and compass navigation", "Study international maritime safety codes"],
-    relatedCareers: ["marine_engineering", "commercial_pilot", "defence_officer"]
+    relatedCareers: ["marine_engineering", "commercial_pilot", "defence_navy"]
   },
 
   // --- SCIENCE & RESEARCH ---

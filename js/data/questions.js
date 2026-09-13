@@ -52,7 +52,7 @@ window.STREAMS = [
   }
 ];
 
-// Extracurricular Activities Options
+// Extracurricular Activities Options (SUPPORTING Signals Only)
 window.EXTRACURRICULAR_OPTIONS = [
   { id: "ncc", label: "NCC (National Cadet Corps)", icon: "🎖️", tag: "leadership_discipline" },
   { id: "nss", label: "NSS (National Service Scheme)", icon: "🤝", tag: "social_service" },
@@ -97,23 +97,28 @@ window.STRENGTHS_OPTIONS = [
   { id: "decision_making", label: "Decision Making Under Pressure", icon: "⚖️" },
   { id: "working_under_pressure", label: "Working Under Pressure", icon: "🛡️" },
   { id: "patience", label: "Patience & Perseverance", icon: "⏳" },
+  { id: "spatial_thinking", label: "Spatial & 3D Thinking", icon: "📐" },
+  { id: "numerical_ability", label: "Numerical & Quantitative Ability", icon: "🔢" },
   { id: "explaining_concepts", label: "Explaining Concepts Clearly", icon: "📢" },
   { id: "public_speaking", label: "Public Speaking & Debating", icon: "🎙️" },
   { id: "mentoring_others", label: "Mentoring & Guiding Others", icon: "🌱" }
 ];
 
-// Career Preferences Options
+// Career Preferences & Environment Options
 window.PREFERENCES_OPTIONS = [
   { id: "working_tech", label: "Working with cutting-edge technology & software", icon: "💻" },
   { id: "working_people", label: "Working closely with people, patients, or communities", icon: "🤝" },
-  { id: "research_investigation", label: "Deep scientific research & investigation", icon: "🔬" },
+  { id: "working_machines", label: "Working hands-on with machines, tools, & industrial equipment", icon: "⚙️" },
+  { id: "working_data", label: "Working with structured data, statistics, & financial models", icon: "📊" },
+  { id: "research_investigation", label: "Deep scientific research & laboratory investigation", icon: "🔬" },
   { id: "building_things", label: "Building physical or digital products & structures", icon: "🏗️" },
   { id: "solving_complex_problems", label: "Solving complex, high-stakes mathematical or logical problems", icon: "🧩" },
-  { id: "creativity_art", label: "Expressing visual design, writing, or creative arts", icon: "🎨" },
+  { id: "creativity_art", label: "Expressing visual design, writing, or creative media", icon: "🎨" },
   { id: "leadership_mgmt", label: "Leading teams, projects, and organizational vision", icon: "👔" },
   { id: "helping_others", label: "Directly helping others grow, heal, or learn", icon: "🌿" },
-  { id: "working_outdoors", label: "Working outdoors, in aviation, at sea, or in the field", icon: "🏔️" },
-  { id: "structured_envs", label: "Structured, predictable, and rule-based environments", icon: "🏛️" },
+  { id: "working_outdoors", label: "Working outdoors, in field operations, or environmental sites", icon: "🏔️" },
+  { id: "defence_service_pref", label: "Structured uniformed defense or armed forces service", icon: "🎖️" },
+  { id: "aviation_pilot_pref", label: "Commercial flight operations & piloting aircraft", icon: "✈️" },
   { id: "business_entrepreneurship", label: "Business growth, finance, markets & entrepreneurship", icon: "📈" },
   { id: "teaching_explaining", label: "Teaching, lecturing, and sharing knowledge with others", icon: "📚" },
   { id: "high_responsibility", label: "High-responsibility roles with critical real-world impact", icon: "🚀" }
@@ -127,25 +132,27 @@ window.STREAM_QUESTIONS = {
       question: "Which aspects of Mathematics and Physics interest you most?",
       type: "multi",
       options: [
-        { id: "calc_alg", label: "Pure Mathematics (Calculus, Algebra, Probability)", tag: "pure_maths" },
+        { id: "calc_alg", label: "Pure Mathematics (Calculus, Algebra, Number Theory)", tag: "pure_maths" },
         { id: "phys_mech", label: "Applied Physics (Mechanics, Forces, Thermodynamics)", tag: "applied_physics" },
         { id: "elec_circuits", label: "Electricity, Magnetism & Electronic Circuits", tag: "electronics" },
-        { id: "optics_astronomy", label: "Optics, Modern Physics & Cosmology / Space", tag: "astrophysics" },
-        { id: "chem_structures", label: "Chemical Thermodynamics & Molecular Reactions", tag: "chemistry" },
+        { id: "optics_astronomy", label: "Optics, Modern Physics & Cosmology / Space Physics", tag: "astrophysics" },
+        { id: "chem_structures", label: "Chemical Thermodynamics & Material Reactions", tag: "chemistry" },
         { id: "spatial_geom", label: "Geometry, 3D Coordinates & Spatial Modeling", tag: "spatial_design" }
       ]
     },
     {
       id: "pcm_problem_style",
-      question: "How do you prefer to apply your quantitative and technical skills?",
+      question: "Which career direction or application area aligns with your goals?",
       type: "multi",
       options: [
-        { id: "software_code", label: "Writing computer code to automate tasks and build apps", tag: "tech_software" },
-        { id: "hardware_machines", label: "Building machinery, engines, drones, or mechanical prototypes", tag: "mechanical_robotics" },
-        { id: "structures_buildings", label: "Designing physical buildings, bridges, or urban blueprints", tag: "civil_arch" },
-        { id: "aerospace_flight", label: "Understanding flight aerodynamics, rockets, or aviation systems", tag: "aviation_aerospace" },
-        { id: "pure_theorems", label: "Proving abstract mathematical theorems or physics theories", tag: "research" },
-        { id: "explaining_maths", label: "Explaining physics/maths concepts to help others understand easily", tag: "teaching_maths" }
+        { id: "software_code", label: "Software Engineering & Computer Programming", tag: "software_coding_interest" },
+        { id: "mechanical_machinery", label: "Mechanical Systems, Engines, Robotics & Industrial Machinery", tag: "mechanical_machinery_interest" },
+        { id: "civil_construction", label: "Civil Engineering, Structural Blueprints & Smart Cities", tag: "civil_struct_interest" },
+        { id: "aerospace_space", label: "Aerospace Rockets, Satellites & Space Physics Research", tag: "aerospace_interest" },
+        { id: "aeronautical_aircraft", label: "Aeronautical Aircraft Engineering & Jet Engine Dynamics", tag: "aeronautical_interest" },
+        { id: "commercial_pilot_spec", label: "Becoming a Commercial Aviation Pilot (Passenger/Cargo Jets)", tag: "pilot_interest" },
+        { id: "defence_tech_iaf", label: "Defence Electronics, Radar Warfare or IAF Flying/Tech Officer", tag: "defence_tech_interest" },
+        { id: "teaching_pcm", label: "Teaching Physics/Maths or Academic Research in STEM", tag: "teaching_interest" }
       ]
     }
   ],
@@ -156,24 +163,25 @@ window.STREAM_QUESTIONS = {
       question: "Which areas of Biology and Chemistry engage you the most?",
       type: "multi",
       options: [
-        { id: "human_anatomy", label: "Human Anatomy, Physiology & Pathology", tag: "clinical_medicine" },
-        { id: "genetics_dna", label: "Genetics, Cell Biology & DNA Editing (CRISPR)", tag: "biotech_genetics" },
-        { id: "organic_chem", label: "Organic Chemistry & Pharmaceutical Formulations", tag: "pharmacy" },
-        { id: "muscular_rehab", label: "Muscular System, Kinesiology & Physical Injury Recovery", tag: "physiotherapy" },
-        { id: "microbiology", label: "Microbiology, Immunology & Infectious Diseases", tag: "life_sciences" },
+        { id: "human_anatomy", label: "Human Anatomy, Physiology & Clinical Medical Science", tag: "clinical_medicine" },
+        { id: "genetics_dna", label: "Genetics, Molecular Biology & Gene Editing (CRISPR)", tag: "biotech_genetics" },
+        { id: "organic_chem", label: "Organic Chemistry & Pharmaceutical Drug Development", tag: "pharmacy" },
+        { id: "muscular_rehab", label: "Muscular Kinesiology & Physical Therapy Recovery", tag: "physiotherapy" },
+        { id: "microbiology", label: "Microbiology, Immunology & Vaccine Research", tag: "life_sciences" },
         { id: "ecology_env", label: "Ecology, Plant Biology & Environmental Ecosystems", tag: "environmental" }
       ]
     },
     {
       id: "pcb_career_direction",
-      question: "What kind of impact do you want to make in life sciences?",
+      question: "What specific healthcare or life science pathway interests you?",
       type: "multi",
       options: [
-        { id: "direct_patient", label: "Direct patient care, diagnosing illnesses, and emergency treatment", tag: "clinical_doctor" },
-        { id: "lab_research", label: "Working in high-tech research labs discovering new drugs or vaccines", tag: "lab_research" },
-        { id: "tech_bio_devices", label: "Combining electronics/engineering with medical tools & diagnostics", tag: "biomedical_tech" },
-        { id: "public_health_mgmt", label: "Managing community health policies & hospital systems", tag: "healthcare_mgmt" },
-        { id: "teaching_bio", label: "Teaching biology, lecturing in colleges, or writing scientific content", tag: "teaching_bio" }
+        { id: "doctor_mbbs", label: "Becoming a Medical Doctor (MBBS) for clinical diagnosis & surgery", tag: "medicine_interest" },
+        { id: "biotech_research", label: "Biotechnology & genetic lab research for vaccines and therapies", tag: "biotech_interest" },
+        { id: "pharma_drug", label: "Pharmaceutical research, drug formulation & clinical testing", tag: "pharmacy_interest" },
+        { id: "physio_rehab", label: "Physiotherapy & sports injury rehabilitation", tag: "physio_interest" },
+        { id: "teaching_bio", label: "Teaching Biology or Academic Lecturing in Life Sciences", tag: "teaching_interest" },
+        { id: "healthtech_digital", label: "HealthTech app management & digital telemedicine", tag: "healthtech_interest" }
       ]
     }
   ],
@@ -181,15 +189,15 @@ window.STREAM_QUESTIONS = {
   pcmb: [
     {
       id: "pcmb_balance",
-      question: "Since you studied both Bio and Maths, where does your curiosity lean?",
+      question: "Since you studied both Bio and Maths, where does your focus lean?",
       type: "multi",
       options: [
-        { id: "pure_healthcare", label: "Mainly towards Clinical Medicine & Healthcare (NEET focus)", tag: "medicine" },
-        { id: "pure_engineering", label: "Mainly towards Engineering & Tech (JEE focus)", tag: "engineering" },
-        { id: "bio_maths_intersection", label: "The intersection: Bio-computing, Genomic Data & Bio-Tech", tag: "bioinformatics" },
-        { id: "medical_devices", label: "Building medical instruments, artificial organs & bio-materials", tag: "biomedical_eng" },
-        { id: "health_data_ai", label: "Using AI & statistics to analyze hospital datasets and disease trends", tag: "healthtech" },
-        { id: "academic_teaching", label: "Teaching STEM subjects & academic research in interdisciplinary science", tag: "teaching_science" }
+        { id: "pcmb_medicine", label: "Clinical Medicine & Surgery (MBBS / Healthcare Focus)", tag: "medicine_interest" },
+        { id: "pcmb_engineering", label: "Engineering, Software & Technology (JEE / Applied Physics Focus)", tag: "engineering_interest" },
+        { id: "pcmb_bioinfo", label: "Bioinformatics, Computational Genomics & DNA Data Analysis", tag: "bioinfo_interest" },
+        { id: "pcmb_biomed", label: "Biomedical Engineering, Artificial Organs & Prosthetics", tag: "biomedical_interest" },
+        { id: "pcmb_aviation_pilot", label: "Commercial Aviation Pilot or Aerospace Engineering", tag: "pilot_interest" },
+        { id: "pcmb_teaching", label: "STEM Educator, Maths/Bio Teacher, or Academic Researcher", tag: "teaching_interest" }
       ]
     }
   ],
@@ -197,15 +205,16 @@ window.STREAM_QUESTIONS = {
   cs_maths: [
     {
       id: "cs_tech_depth",
-      question: "What excites you most about Computer Science and Mathematics?",
+      question: "What specific field in Computer Science and Technology attracts you?",
       type: "multi",
       options: [
-        { id: "software_apps", label: "Building complete web, mobile, or desktop applications", tag: "software_dev" },
-        { id: "ai_algorithms", label: "AI, Machine Learning models, and Neural Networks", tag: "ai_ml" },
-        { id: "data_analytics", label: "Analyzing massive datasets, statistics, and trends", tag: "data_science" },
-        { id: "cyber_security", label: "Ethical hacking, cryptography, and network security", tag: "cybersecurity" },
-        { id: "game_graphics", label: "3D Graphics, Game Development, and Interactive UI", tag: "game_ui" },
-        { id: "teaching_coding", label: "Teaching others how to code & creating EdTech learning platforms", tag: "cs_teaching" }
+        { id: "software_apps", label: "Software Engineering & System Architecture (Web, Mobile, Cloud)", tag: "software_coding_interest" },
+        { id: "ai_algorithms", label: "Artificial Intelligence, Neural Networks & Machine Learning", tag: "ai_ml_interest" },
+        { id: "data_analytics", label: "Data Science, Big Analytics & Predictive Modeling", tag: "data_science_interest" },
+        { id: "cyber_security", label: "Cybersecurity, Ethical Hacking & Defensive Networking", tag: "cybersecurity_interest" },
+        { id: "game_ui", label: "UI/UX & Interactive Product Design", tag: "ui_ux_interest" },
+        { id: "teaching_coding", label: "Computer Science Educator, Coding Instructor & EdTech Specialist", tag: "teaching_interest" },
+        { id: "defence_cyber", label: "Cyber Defence & Military Technology Specialist", tag: "defence_tech_interest" }
       ]
     }
   ],
@@ -213,15 +222,15 @@ window.STREAM_QUESTIONS = {
   commerce: [
     {
       id: "commerce_subject_depth",
-      question: "Which Commerce and Business domains interest you most?",
+      question: "Which Commerce and Financial domain fits your ambition best?",
       type: "multi",
       options: [
-        { id: "accounting_audit", label: "Financial Accountancy, Tax Strategy & Corporate Auditing", tag: "ca_cma" },
-        { id: "stock_markets", label: "Stock Markets, Equity Valuation & Investment Banking", tag: "investment" },
-        { id: "macro_economics", label: "Economic Policies, Inflation, Markets & Trade Metrics", tag: "economics" },
-        { id: "business_mgmt", label: "Business Management, Leadership, Operations & HR", tag: "management" },
-        { id: "fintech_startups", label: "FinTech, Digital Payments & Building Startups", tag: "fintech" },
-        { id: "law_governance", label: "Corporate Law, Contracts, Business Regulations & Taxation", tag: "corporate_law" }
+        { id: "accounting_audit", label: "Chartered Accountancy (CA), Auditing & Corporate Taxation", tag: "ca_accounting_interest" },
+        { id: "stock_markets", label: "Investment Banking, Stock Valuation & Equity Research", tag: "finance_stock_interest" },
+        { id: "actuarial_risk", label: "Actuarial Science, Probability & Financial Risk Analytics", tag: "actuarial_interest" },
+        { id: "business_mgmt", label: "Applied Business Operations, Retail Management & Logistics", tag: "business_sales_interest" },
+        { id: "fintech_startups", label: "FinTech, Digital Payments & Technology Entrepreneurship", tag: "fintech_interest" },
+        { id: "law_governance", label: "Corporate Law, Business Regulations & Intellectual Property", tag: "corporate_law_interest" }
       ]
     }
   ],
@@ -229,15 +238,15 @@ window.STREAM_QUESTIONS = {
   arts: [
     {
       id: "arts_subject_depth",
-      question: "Which Humanities and Social Science fields engage you most?",
+      question: "Which Humanities and Social Science pathway interests you most?",
       type: "multi",
       options: [
-        { id: "law_justice", label: "Law, Justice Systems, Constitutional Rights & Debate", tag: "law" },
-        { id: "civils_governance", label: "Civil Services, Public Policy, IAS & Governance", tag: "civil_services" },
-        { id: "psychology_mind", label: "Human Psychology, Behavioral Science & Counseling", tag: "psychology" },
-        { id: "writing_journalism", label: "Investigative Journalism, Media Reporting & Creative Writing", tag: "journalism" },
-        { id: "visual_design", label: "UI/UX, Graphic Design, Photography & Visual Arts", tag: "design" },
-        { id: "teaching_humanities", label: "Teaching History, Literature, or Social Sciences", tag: "teaching_arts" }
+        { id: "arts_law", label: "Corporate Law, Constitutional Rights & Legal Advocacy", tag: "law_interest" },
+        { id: "arts_civils", label: "Civil Services (IAS / IPS / IFS) & Public Administration", tag: "civils_interest" },
+        { id: "arts_policy", label: "Public Policy, International Relations & Diplomacy", tag: "policy_interest" },
+        { id: "arts_journalism", label: "Investigative Journalism, Digital Media & Broadcasting", tag: "journalism_interest" },
+        { id: "arts_ui_ux", label: "UI/UX Product Design & Visual Graphic Arts", tag: "ui_ux_interest" },
+        { id: "arts_teaching", label: "Teaching History, Literature, Humanities or Academic Research", tag: "teaching_interest" }
       ]
     }
   ],
@@ -245,14 +254,16 @@ window.STREAM_QUESTIONS = {
   vocational: [
     {
       id: "vocational_focus",
-      question: "Which practical or applied skills describe your strengths best?",
+      question: "Which practical, applied, or technical field aligns with your skills?",
       type: "multi",
       options: [
-        { id: "digital_design_media", label: "Digital UI/UX, Graphic Design & Video Editing", tag: "creative_media" },
-        { id: "hands_on_tech", label: "Hands-on electronics repair, networking, or computer hardware", tag: "applied_tech" },
-        { id: "practical_business", label: "Small business management, sales, or trade operations", tag: "business" },
-        { id: "hospitality_tourism", label: "Hospitality, Event Management, or Tourism", tag: "service_mgmt" },
-        { id: "fitness_coaching", label: "Physical Fitness Training, Sports Coaching & Wellness", tag: "sports_fitness" }
+        { id: "voc_mechanical", label: "Mechanical Systems, Machinery Repair & Workshop Practice", tag: "mechanical_machinery_interest" },
+        { id: "voc_coding_it", label: "Applied Information Technology, Computer Maintenance & Web Support", tag: "software_coding_interest" },
+        { id: "voc_business_sales", label: "Applied Business Operations, Store Management & Retail Sales", tag: "business_sales_interest" },
+        { id: "voc_design_graphics", label: "Digital Media, Applied Graphic Design & Video Editing", tag: "ui_ux_interest" },
+        { id: "voc_healthcare_support", label: "Physical Rehabilitation Support, Fitness & Health Services", tag: "physio_interest" },
+        { id: "voc_defence_explicit", label: "Explicit interest in joining Armed Forces (Army/Navy/Air Force)", tag: "defence_army_interest" },
+        { id: "voc_pilot_explicit", label: "Explicit interest in becoming a Commercial Aviation Pilot", tag: "pilot_interest" }
       ]
     }
   ]
