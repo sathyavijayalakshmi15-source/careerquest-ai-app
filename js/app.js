@@ -107,11 +107,25 @@
               renderApp();
             },
             onNext: () => {
-              // Validation
-              if (appState.assessmentStep === 1 && !appState.stream) {
-                alert("Please select a Class 12 stream to continue.");
+              // Strict step validation
+              let isValid = false;
+              if (appState.assessmentStep === 1) isValid = !!appState.stream;
+              else if (appState.assessmentStep === 2) isValid = (appState.streamAnswers || []).length >= 1;
+              else if (appState.assessmentStep === 3) isValid = (appState.extracurriculars || []).length >= 1;
+              else if (appState.assessmentStep === 4) isValid = (appState.strengths || []).length >= 1;
+              else if (appState.assessmentStep === 5) isValid = (appState.preferences || []).length >= 1;
+
+              if (!isValid) {
+                const banner = document.getElementById('quizValidationBanner');
+                if (banner) {
+                  banner.classList.remove('hidden');
+                  banner.classList.remove('pulse-error');
+                  void banner.offsetWidth;
+                  banner.classList.add('pulse-error');
+                }
                 return;
               }
+
               if (appState.assessmentStep < 5) {
                 appState.assessmentStep++;
                 renderApp();

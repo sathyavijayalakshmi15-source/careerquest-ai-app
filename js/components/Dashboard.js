@@ -1,4 +1,4 @@
-// CAREERQUEST AI - Student Dashboard Component
+// CAREERQUEST AI - Student Dashboard Component with Animated Logo Banner & Mobile Optimizations
 
 (function() {
   function renderDashboard(state = {}) {
@@ -22,17 +22,19 @@
 
     const completedRoadmapCount = Object.keys(roadmapProgress).filter(k => roadmapProgress[k]).length;
 
+    const logoHtml = window.CQ_LOGO ? window.CQ_LOGO.renderLogo({ size: "large", showText: true, animated: true }) : "";
+
     const topMatchesHtml = topMatches.map((m, idx) => `
       <div class="dash-career-row glass-panel mb-3">
         <div class="dash-career-info">
           <span class="rank-tag">#0${idx + 1}</span>
           <div class="dash-career-text">
             <h4 class="dash-career-title">${m.career.name}</h4>
-            <span class="dash-career-cat">${m.career.category} • ${m.matchPercent}% Match Fit</span>
+            <span class="dash-career-cat">${m.career.category} • <strong class="text-red-glow">${m.matchPercent}% Match Fit</strong></span>
           </div>
         </div>
 
-        <div class="dash-career-actions">
+        <div class="dash-career-actions mt-2-mobile">
           <button class="tertiary-btn btn-sm" data-dash-experience="${m.career.id}">
             <span>⚡ Challenge</span>
           </button>
@@ -44,15 +46,24 @@
     `).join("");
 
     return `
-      <div class="dashboard-page-wrapper container section-padding">
-        <div class="dashboard-header mb-8 flex justify-between items-center">
-          <div>
-            <span class="badge-pill mb-2">STUDENT COMMAND CENTER</span>
-            <h1 class="dash-title">Career Exploration Dashboard</h1>
-            <p class="dash-subtitle">Track your assessment profile, top career matches, mini-challenge badges, and roadmap progress.</p>
+      <div class="dashboard-page-wrapper container section-padding dash-animated-entrance">
+        <!-- Elegant Animated C+Q Logo Hero Banner -->
+        <div class="dash-hero-banner glass-panel mb-8 text-center relative overflow-hidden">
+          <div class="dash-banner-glow"></div>
+          <div class="dash-logo-assembly">
+            ${logoHtml}
           </div>
+          <div class="badge-pill mt-3 mb-2">
+            <span class="pulse-dot"></span>
+            <span>STUDENT COMMAND CENTER</span>
+          </div>
+          <h1 class="dash-banner-title">Career Exploration Dashboard</h1>
+          <p class="dash-subtitle max-w-xl mx-auto">Track your assessment profile, top career matches, mini-challenge badges, and roadmap progress.</p>
+        </div>
 
-          <button class="secondary-btn" id="dashResetBtn">
+        <div class="dash-top-actions flex justify-between items-center mb-6">
+          <h2 class="dash-section-heading">Overview & Metrics</h2>
+          <button class="secondary-btn btn-sm" id="dashResetBtn">
             <span>Reset All Progress</span>
           </button>
         </div>
@@ -62,25 +73,25 @@
             <span class="dash-empty-icon">📝</span>
             <h3 class="mt-4">Assessment Not Yet Completed</h3>
             <p class="text-muted max-w-md mx-auto mt-2">Take the Class 12 stream assessment to generate your personalized 3–5 Careers Worth Exploring.</p>
-            <button class="primary-btn mt-6" data-view="assessment">Start Exploring →</button>
+            <button class="primary-btn mt-6" data-view="assessment" id="dashStartExploringBtn">Start Exploring →</button>
           </div>
         ` : ''}
 
         <!-- Top Metrics Cards Grid -->
         <div class="dash-metrics-grid col-3 mb-8">
-          <div class="metric-card glass-panel text-center">
+          <div class="metric-card glass-panel text-center card-tilt">
             <span class="metric-icon">🎓</span>
-            <span class="metric-val">${streamObj ? streamObj.title : 'Not Set'}</span>
+            <span class="metric-val text-ellipsis">${streamObj ? streamObj.title : 'Not Set'}</span>
             <span class="metric-label">Class 12 Stream</span>
           </div>
 
-          <div class="metric-card glass-panel text-center">
+          <div class="metric-card glass-panel text-center card-tilt">
             <span class="metric-icon">🏆</span>
             <span class="metric-val">${completedChallenges.length} Badges</span>
             <span class="metric-label">Completed Mini-Challenges</span>
           </div>
 
-          <div class="metric-card glass-panel text-center">
+          <div class="metric-card glass-panel text-center card-tilt">
             <span class="metric-icon">🗺️</span>
             <span class="metric-val">${completedRoadmapCount} Milestones</span>
             <span class="metric-label">Roadmap Steps Completed</span>
@@ -131,7 +142,7 @@
         ` : ''}
 
         <!-- Navigation Quick Shortcuts -->
-        <div class="dash-shortcuts-panel glass-panel p-6">
+        <div class="dash-shortcuts-panel glass-panel p-6 mb-6">
           <h3 class="mb-4">Quick Navigation Shortcuts</h3>
           <div class="shortcuts-grid col-4">
             <button class="shortcut-btn glass-panel" data-view="explorer">

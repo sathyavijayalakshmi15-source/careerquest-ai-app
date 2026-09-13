@@ -1585,6 +1585,86 @@ button {
 .sc-icon { font-size: 1.8rem; }
 .sc-label { font-size: 0.9rem; font-weight: 600; }
 
+/* Quiz Validation Error Banner */
+.quiz-validation-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.25rem;
+  background: rgba(255, 42, 42, 0.15);
+  border: 1px solid var(--fiery-red);
+  border-radius: 10px;
+  color: #FF6B6B;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 0 15px rgba(255, 42, 42, 0.2);
+}
+
+.pulse-error {
+  animation: shakePulse 0.4s ease-in-out;
+}
+
+@keyframes shakePulse {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+/* Dashboard Entrance Animation & Hero Banner */
+.dash-animated-entrance {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dash-hero-banner {
+  padding: 2.5rem 1.75rem;
+  background: radial-gradient(circle at center, rgba(255, 42, 42, 0.18) 0%, rgba(18, 19, 28, 0.9) 75%);
+  border: 1px solid var(--glass-border);
+}
+
+.dash-logo-assembly {
+  display: inline-block;
+  animation: logoGlowAssembly 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes logoGlowAssembly {
+  0% { transform: scale(0.85); opacity: 0; filter: drop-shadow(0 0 0px var(--fiery-red)); }
+  50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 25px var(--glow-red)); }
+  100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 10px var(--fiery-red)); }
+}
+
+.flex-1 { flex: 1; }
+.text-ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Option Cards Clean Alignment */
+.quiz-option-btn {
+  min-height: 64px;
+  width: 100%;
+  align-items: center;
+}
+
+.quiz-check-indicator {
+  min-width: 28px;
+  text-align: right;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.quiz-option-content {
+  overflow: hidden;
+  padding-right: 0.5rem;
+}
+
+.quiz-option-title {
+  display: block;
+  word-break: break-word;
+  line-height: 1.35;
+}
+
 /* ==========================================================================
    RESPONSIVE DESIGN BREAKPOINTS
    ========================================================================== */
@@ -1603,11 +1683,17 @@ button {
   .hero-cta-group { flex-direction: column; }
   .process-flow-bar { flex-direction: column; }
   .process-arrow { transform: rotate(90deg); }
-  .quiz-options-grid.col-2 { grid-template-columns: 1fr; }
+  .quiz-options-grid.col-2 { grid-template-columns: 1fr !important; }
+  .dash-metrics-grid.col-3 { grid-template-columns: 1fr !important; }
+  .dash-main-grid.col-2 { grid-template-columns: 1fr !important; }
+  .shortcuts-grid.col-4 { grid-template-columns: repeat(2, 1fr) !important; }
   .col-2, .col-3, .col-4 { grid-template-columns: 1fr; }
   .match-card-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
   .match-card-footer { flex-direction: column; }
   .card-action-btn { width: 100%; }
+  .dash-career-row { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+  .dash-career-actions { width: 100%; justify-content: flex-start; }
+  .mt-2-mobile { margin-top: 0.5rem; }
 }
 
 /* Reduced Motion Accessibility */
