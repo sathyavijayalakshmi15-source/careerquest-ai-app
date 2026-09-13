@@ -259,15 +259,19 @@ window.STREAM_QUESTIONS = {
   arts: [
     {
       id: "arts_subject_depth",
-      question: "Which humanities field interests you most?",
-      subtitle: "Select social science, policy or creative paths.",
+      question: "Which humanities or creative field interests you most?",
+      subtitle: "Select legal, media, social science or creative arts pathways.",
       type: "multi",
       options: [
         { id: "arts_law", label: "Law & Legal Advocacy", tag: "law_interest" },
         { id: "arts_civils", label: "Civil Services (IAS/IPS) & Polity", tag: "civils_interest" },
         { id: "arts_policy", label: "Public Policy & International Diplomacy", tag: "policy_interest" },
-        { id: "arts_journalism", label: "Journalism & Media Reporting", tag: "journalism_interest" },
-        { id: "arts_ui_ux", label: "UI/UX & Visual Graphic Arts", tag: "ui_ux_interest" },
+        { id: "arts_journalism", label: "Journalism & News Reporting", tag: "journalism_interest" },
+        { id: "arts_acting", label: "Acting, Theatre & Performance Arts", tag: "acting_interest" },
+        { id: "arts_camera", label: "Cinematography, Photography & Camera Work", tag: "camera_interest" },
+        { id: "arts_filmmaking", label: "Film Direction, Screenwriting & Storytelling", tag: "filmmaking_interest" },
+        { id: "arts_music", label: "Music, Singing & Sound Production", tag: "music_interest" },
+        { id: "arts_ui_ux", label: "Graphic Design, Animation & UI/UX", tag: "ui_ux_interest" },
         { id: "arts_teaching", label: "Teaching History, Literature or Social Science", tag: "teaching_interest" }
       ]
     }
@@ -276,14 +280,16 @@ window.STREAM_QUESTIONS = {
   vocational: [
     {
       id: "vocational_focus",
-      question: "Which practical skill fits you best?",
-      subtitle: "Select applied technical or hands-on fields.",
+      question: "Which practical skill or creative field fits you best?",
+      subtitle: "Select applied technical, media or hands-on domains.",
       type: "multi",
       options: [
         { id: "voc_mechanical", label: "Machinery & Workshop Mechanics", tag: "mechanical_machinery_interest" },
         { id: "voc_coding_it", label: "Applied IT & Computer Maintenance", tag: "software_coding_interest" },
-        { id: "voc_business_sales", label: "Business Operations & Sales", tag: "business_sales_interest" },
+        { id: "voc_business_sales", label: "Business Operations & Retail", tag: "business_sales_interest" },
         { id: "voc_design_graphics", label: "Digital Design & Video Editing", tag: "ui_ux_interest" },
+        { id: "voc_camera", label: "Photography, Video Shooting & Camera Work", tag: "camera_interest" },
+        { id: "voc_acting", label: "Acting & Performing Arts", tag: "acting_interest" },
         { id: "voc_healthcare_support", label: "Physical Rehab & Health Support", tag: "physio_interest" },
         { id: "voc_defence_explicit", label: "Explicit interest in Armed Forces", tag: "defence_army_interest" },
         { id: "voc_pilot_explicit", label: "Explicit interest in Commercial Pilot", tag: "pilot_interest" }

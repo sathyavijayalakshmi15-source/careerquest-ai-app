@@ -33,33 +33,24 @@
                          tagSet.has("medicine_interest") ||
                          tagSet.has("biotech_interest") ||
                          tagSet.has("bioinfo_interest") ||
+                         tagSet.has("nursing_interest") ||
+                         tagSet.has("dentistry_interest") ||
+                         tagSet.has("physio_interest") ||
+                         tagSet.has("public_health_interest") ||
                          ["pcb", "pcmb"].includes(stream);
 
-    // Specific interest signals
-    const hasPilotInterest = tagSet.has("pilot_interest") || prefSet.has("aviation_pilot_pref");
-    const hasArmyInterest = tagSet.has("defence_army_interest") || (prefSet.has("defence_service_pref") && extraSet.has("ncc"));
+    // Defense Signals
+    const hasArmyInterest = tagSet.has("defence_army_interest");
     const hasNavyInterest = tagSet.has("navy_interest");
-    const hasAirForceInterest = tagSet.has("airforce_interest") || (prefSet.has("defence_service_pref") && (tagSet.has("aerospace_interest") || tagSet.has("aeronautical_interest")));
-    const hasDefenceTechInterest = tagSet.has("defence_tech_interest") || (prefSet.has("defence_service_pref") && tagSet.has("electronics"));
-    const hasGeneralDefenceInterest = prefSet.has("defence_service_pref") || hasArmyInterest || hasNavyInterest || hasAirForceInterest || hasDefenceTechInterest;
+    const hasAirForceInterest = tagSet.has("airforce_interest");
+    const hasDefenceTechInterest = tagSet.has("defence_tech_interest");
+    const hasGeneralDefenceInterest = prefSet.has("defence_service_pref") || extraSet.has("ncc") || hasArmyInterest || hasNavyInterest || hasAirForceInterest || hasDefenceTechInterest;
 
-    const hasSoftwareCoding = tagSet.has("software_coding_interest") || extraSet.has("coding_clubs") || prefSet.has("working_tech");
-    const hasMechanicalMachinery = tagSet.has("mechanical_machinery_interest") || prefSet.has("working_machines") || extraSet.has("robotics");
-    const hasCivilStruct = tagSet.has("civil_struct_interest");
-    const hasAerospace = tagSet.has("aerospace_interest");
-    const hasAeronautical = tagSet.has("aeronautical_interest");
-    const hasMedicine = tagSet.has("medicine_interest") || tagSet.has("clinical_medicine");
-    const hasBiotech = tagSet.has("biotech_interest") || tagSet.has("biotech_genetics");
-    const hasPharmacy = tagSet.has("pharmacy_interest") || tagSet.has("pharmacy");
-    const hasPhysio = tagSet.has("physio_interest") || tagSet.has("physiotherapy");
-    const hasTeaching = tagSet.has("teaching_interest") || prefSet.has("teaching_explaining") || extraSet.has("teaching_tutoring") || extraSet.has("peer_mentoring");
-    const hasCA = tagSet.has("ca_accounting_interest");
-    const hasFinance = tagSet.has("finance_stock_interest");
-    const hasBusinessSales = tagSet.has("business_sales_interest") || prefSet.has("business_entrepreneurship");
-    const hasLaw = tagSet.has("law_interest") || tagSet.has("corporate_law_interest");
-    const hasCivils = tagSet.has("civils_interest");
-    const hasJournalism = tagSet.has("journalism_interest");
-    const hasUIUX = tagSet.has("ui_ux_interest") || prefSet.has("creativity_art");
+    // Aviation Signals
+    const hasPilotInterest = tagSet.has("pilot_interest") || prefSet.has("aviation_pilot_pref");
+    const hasAircraftMaintInterest = tagSet.has("aircraft_maint_interest");
+    const hasAvionicsInterest = tagSet.has("avionics_interest");
+    const hasGeneralAviationInterest = hasPilotInterest || hasAircraftMaintInterest || hasAvionicsInterest || prefSet.has("aviation_pilot_pref");
 
     careers.forEach(career => {
       let score = 0;
@@ -67,216 +58,419 @@
       const signalsFound = [];
 
       // -----------------------------------------------------------------
-      // 1. SPECIFIC CAREER INTEREST SIGNALS (+45 PTS - HIGHEST WEIGHT)
+      // 1. VERY HIGH: EXPLICIT CAREER INTEREST (+50 PTS BASE SCORE)
+      // Explicit selection of a career area MUST be the strongest driver!
       // -----------------------------------------------------------------
-      if (career.id === "commercial_pilot" && hasPilotInterest) {
-        score += 45;
-        signalsFound.push("specifically expressed interest in commercial aviation piloting");
+      let hasExplicitMatch = false;
+
+      // Technology
+      if (career.id === "cybersecurity" && (tagSet.has("cybersecurity_interest") || tagSet.has("ethical_hacking"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Cybersecurity & Ethical Hacking as a primary career interest");
       }
-      if (career.id === "defence_army" && (hasArmyInterest || (hasGeneralDefenceInterest && strengthSet.has("leadership")))) {
-        score += 45;
-        signalsFound.push("specifically expressed interest in Indian Army command & tactical service");
+      if (career.id === "ai_ml" && (tagSet.has("ai_ml_interest") || tagSet.has("ai_python"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Artificial Intelligence & Machine Learning as a career interest");
       }
-      if (career.id === "defence_navy" && (hasNavyInterest || (hasGeneralDefenceInterest && (prefSet.has("working_outdoors") || strengthSet.has("teamwork"))))) {
-        score += 45;
-        signalsFound.push("specifically expressed interest in Indian Navy maritime defense");
+      if (career.id === "cs_software" && (tagSet.has("software_coding_interest") || tagSet.has("software_coding"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Software Engineering & Systems Development as a career interest");
       }
-      if (career.id === "defence_airforce" && (hasAirForceInterest || (hasGeneralDefenceInterest && (hasAerospace || hasAeronautical)))) {
-        score += 45;
-        signalsFound.push("specifically expressed interest in Indian Air Force aerial & technical operations");
+      if (career.id === "web_app_developer" && (tagSet.has("web_app_dev_interest") || tagSet.has("web_dev"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Web & Mobile App Development as a career interest");
+      }
+      if (career.id === "cloud_devops" && tagSet.has("cloud_devops_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Cloud Engineering & DevOps as a career interest");
+      }
+      if (career.id === "data_science" && (tagSet.has("data_science_interest") || tagSet.has("data_analysis"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Data Science & Big Analytics as a career interest");
+      }
+      if (career.id === "robotics_automation" && (tagSet.has("robotics_automation_interest") || tagSet.has("robotics_mechatronics"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Robotics & Autonomous Systems Engineering");
+      }
+
+      // Engineering
+      if (career.id === "aerospace" && tagSet.has("aerospace_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Aerospace & Space Systems Engineering");
+      }
+      if (career.id === "aeronautical_eng" && tagSet.has("aeronautical_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Aeronautical Engineering & Aircraft Design");
+      }
+      if (career.id === "mechanical" && tagSet.has("mechanical_machinery_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Mechanical & Automotive Engineering");
+      }
+      if (career.id === "civil_structural" && tagSet.has("civil_struct_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Civil & Smart Infrastructure Engineering");
+      }
+      if (career.id === "biomedical_eng" && tagSet.has("biomedical_eng_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Biomedical Engineering & Healthcare Devices");
+      }
+
+      // Medical & Healthcare
+      if (career.id === "medicine" && (tagSet.has("medicine_interest") || tagSet.has("clinical_medicine"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Medicine & Surgery (MBBS) as a career goal");
+      }
+      if (career.id === "biotechnology" && (tagSet.has("biotech_interest") || tagSet.has("biotech_genetics"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Biotechnology & Genetic Engineering");
+      }
+      if (career.id === "pharmacy" && tagSet.has("pharmacy_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Pharmaceutical Sciences & Drug Research");
+      }
+      if (career.id === "bioinformatics" && tagSet.has("bioinfo_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Bioinformatics & Computational Biology");
+      }
+      if (career.id === "physiotherapy" && tagSet.has("physio_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Physiotherapy & Sports Rehabilitation");
+      }
+      if (career.id === "nursing" && tagSet.has("nursing_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Nursing & Clinical Patient Care");
+      }
+      if (career.id === "dentistry" && tagSet.has("dentistry_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Dental Surgery & Oral Healthcare (BDS)");
+      }
+      if (career.id === "public_health" && tagSet.has("public_health_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Public Health & Epidemiology");
+      }
+
+      // Defence
+      if (career.id === "defence_army" && hasArmyInterest) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Indian Army Officer (Combat & Tactical Command)");
+      }
+      if (career.id === "defence_navy" && hasNavyInterest) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Indian Navy Officer (Executive & Marine)");
+      }
+      if (career.id === "defence_airforce" && hasAirForceInterest) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Indian Air Force Flying & Technical Officer");
       }
       if (career.id === "defence_tech" && hasDefenceTechInterest) {
-        score += 45;
-        signalsFound.push("specifically expressed interest in defence electronics & cyber warfare");
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Defence Electronics & Cyber Warfare Specialist");
       }
-      if (["cs_software", "ai_ml", "data_science", "cybersecurity"].includes(career.id) && hasSoftwareCoding) {
-        score += 40;
-        signalsFound.push("highlighted strong interest in software engineering & computer programming");
+
+      // Aviation
+      if (career.id === "commercial_pilot" && hasPilotInterest) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Commercial Aviation Pilot");
       }
-      if (["applied_mechanics_tech", "mechanical", "robotics_automation"].includes(career.id) && hasMechanicalMachinery) {
-        score += 40;
-        signalsFound.push("demonstrated practical hands-on interest in machinery, tools, and mechanical systems");
+      if (career.id === "aircraft_maintenance" && hasAircraftMaintInterest) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Aircraft Maintenance Engineering (AME)");
       }
-      if (["ca_auditing", "financial_analyst", "actuarial_science"].includes(career.id) && (hasCA || hasFinance)) {
-        score += 40;
-        signalsFound.push("showed keen interest in financial accounting, auditing, and corporate finance");
+      if (career.id === "avionics" && hasAvionicsInterest) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Avionics & Flight Electronics");
       }
-      if (["medicine", "biotechnology", "pharmacy", "physiotherapy", "nursing", "dentistry"].includes(career.id) && (hasMedicine || hasBiotech || hasPharmacy || hasPhysio)) {
-        score += 40;
-        signalsFound.push("expressed dedicated passion for medical care, life sciences, and healthcare");
+
+      // Commerce & Finance
+      if (career.id === "ca_auditing" && tagSet.has("ca_accounting_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Chartered Accountancy & Financial Auditing");
       }
-      if (career.category === "Education" && (hasTeaching || strengthSet.has("explaining_concepts") || strengthSet.has("mentoring_others"))) {
-        score += 40;
-        signalsFound.push("demonstrated strong interest in teaching, lecturing, and sharing knowledge");
+      if (career.id === "financial_analyst" && tagSet.has("finance_stock_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Investment Banking & Financial Analysis");
       }
-      if (["corporate_law", "civil_services", "public_policy"].includes(career.id) && (hasLaw || hasCivils)) {
-        score += 40;
-        signalsFound.push("showed strong orientation towards law, public governance, and legal analysis");
+      if (career.id === "actuarial_science" && tagSet.has("actuarial_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Actuarial Science & Risk Analytics");
+      }
+      if (career.id === "company_secretary" && tagSet.has("company_sec_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Company Secretary & Corporate Governance");
+      }
+      if (career.id === "marketing_digital" && tagSet.has("marketing_digital_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Digital Marketing & Brand Strategy");
+      }
+      if (career.id === "fintech_entrepreneurship" && tagSet.has("fintech_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected FinTech & Digital Business");
+      }
+
+      // Law & Government
+      if (career.id === "corporate_law" && (tagSet.has("corporate_law_interest") || tagSet.has("law_interest"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Law & Corporate Legal Practice");
+      }
+      if (career.id === "civil_services" && tagSet.has("civils_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Civil Services & Public Administration (IAS/IPS)");
+      }
+      if (career.id === "public_policy" && tagSet.has("public_policy_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Public Policy & International Relations");
+      }
+
+      // Education & Teaching
+      if (career.id === "maths_educator" && tagSet.has("maths_teaching_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Mathematics Education & Academic Career");
+      }
+      if (career.id === "cs_educator" && tagSet.has("cs_teaching_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Computer Science Education & EdTech");
+      }
+      if (career.id === "biology_educator" && tagSet.has("bio_teaching_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Biology Education & Life Sciences Teaching");
+      }
+
+      // Creative & Performing Arts
+      if (career.id === "actor_performer" && tagSet.has("acting_performance_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Acting & Theatre Performance");
+      }
+      if (career.id === "film_director" && tagSet.has("film_directing_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Film Directing & Screenwriting");
+      }
+      if (career.id === "cinematographer_camera" && (tagSet.has("cinematography_camera_interest") || tagSet.has("photography_video_interest"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Cinematography, Photography & Camera Operations");
+      }
+      if (career.id === "musician_singer" && tagSet.has("musician_singing_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Music Performance, Singing & Sound Production");
+      }
+      if (career.id === "ui_ux_design" && (tagSet.has("design_uiux_interest") || tagSet.has("ui_ux_interest"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected UI/UX & Product Design");
+      }
+      if (career.id === "journalism_media" && tagSet.has("journalism_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Journalism & Digital Media");
+      }
+      if (career.id === "content_creation" && tagSet.has("content_creator_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Digital Content Creation & Video Production");
+      }
+
+      // Sports & Fitness
+      if (career.id === "professional_athlete" && tagSet.has("sports_athlete_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Professional Athletics & Competitive Sports");
+      }
+      if (career.id === "sports_coach_mgmt" && tagSet.has("sports_coaching_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Sports Coaching & Sports Management");
+      }
+
+      // Maritime
+      if (career.id === "marine_engineering" && tagSet.has("marine_eng_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Marine Engineering & Ship Machinery");
+      }
+      if (career.id === "merchant_navy_deck" && tagSet.has("merchant_navy_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Merchant Navy Deck Officer & Navigation");
+      }
+
+      // Science & Research
+      if (career.id === "astrophysics" && tagSet.has("astrophysics_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Astrophysics & Space Science Research");
+      }
+      if (career.id === "pure_science_maths" && tagSet.has("pure_maths_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Pure Mathematics & Cryptographic Research");
+      }
+
+      // Emerging
+      if (career.id === "healthtech_manager" && tagSet.has("healthtech_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected HealthTech & Telemedicine Innovation");
+      }
+      if (career.id === "product_mgmt" && tagSet.has("product_mgmt_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Technology Product Management");
+      }
+      if (career.id === "climate_tech" && tagSet.has("climate_tech_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Climate Tech & Renewable Energy");
       }
 
       // -----------------------------------------------------------------
-      // 2. RELEVANT ACADEMIC STREAM & SUBJECT SIGNALS (+15 PTS FILTER)
-      // Stream is a COMPATIBILITY FILTER, NOT the primary reason!
+      // 2. HIGH: ACADEMIC SUBJECT INTERESTS & STREAM COMPATIBILITY (+20 PTS)
       // -----------------------------------------------------------------
       if (stream !== "vocational") {
         if (career.streamCompatibility.includes(stream)) {
           score += 15;
-          signalsFound.push(`studied the **${streamName}** Class 12 stream`);
+          if (!hasExplicitMatch) signalsFound.push(`studied **${streamName}** in Class 12`);
         } else {
-          score -= 25; // Incompatible stream penalty
+          // Soft penalty for non-matching stream if no explicit selection
+          if (!hasExplicitMatch) {
+            score -= 20;
+          }
         }
       } else {
-        // Vocational Stream Scoping:
-        if (["applied_mechanics_tech", "vocational_tech_it", "vocational_biz_mgmt", "applied_design_media"].includes(career.id)) {
-          score += 20;
-          signalsFound.push(`selected **Vocational / Applied Skills** stream`);
-        } else if (career.streamCompatibility.includes("vocational")) {
-          score += 10;
+        // Vocational stream handling
+        if (career.streamCompatibility.includes("vocational")) {
+          score += 15;
+          if (!hasExplicitMatch) signalsFound.push("selected **Vocational / Applied Skills** stream");
         } else {
-          score -= 15;
+          score -= 10;
+        }
+      }
+
+      // Subject overlap evaluation (+20 PTS)
+      if (career.relevantSubjects) {
+        let subjectMatches = 0;
+        career.relevantSubjects.forEach(subj => {
+          const lowerSubj = subj.toLowerCase();
+          streamAnswers.forEach(ans => {
+            if (ans.toLowerCase().includes(lowerSubj) || lowerSubj.includes(ans.toLowerCase())) {
+              subjectMatches++;
+            }
+          });
+        });
+        if (subjectMatches > 0) {
+          score += Math.min(20, subjectMatches * 10);
         }
       }
 
       // -----------------------------------------------------------------
-      // 3. NATURAL STRENGTHS & APTITUDES (+12 PTS)
+      // 3. HIGH: RELEVANT PREFERENCES & WORK ENVIRONMENTS (+15 PTS)
       // -----------------------------------------------------------------
-      if (strengthSet.has("problem_solving") && ["cs_software", "ai_ml", "cybersecurity", "mechanical", "aerospace", "applied_mechanics_tech"].includes(career.id)) {
-        score += 12;
-        signalsFound.push("possesses natural strength in Problem Solving");
+      if (prefSet.has("working_tech") && ["Technology", "Engineering"].includes(career.category)) {
+        score += 15;
+        if (signalsFound.length < 3) signalsFound.push("enjoys working with software & technology");
       }
-      if (strengthSet.has("analytical_thinking") && ["data_science", "financial_analyst", "ca_auditing", "astrophysics", "pure_science_maths"].includes(career.id)) {
-        score += 12;
-        signalsFound.push("possesses strong Analytical Thinking aptitude");
+      if (prefSet.has("creativity_art") && ["Creative & Media", "Education"].includes(career.category)) {
+        score += 15;
+        if (signalsFound.length < 3) signalsFound.push("enjoys artistic design & creative expression");
       }
-      if (strengthSet.has("spatial_thinking") && ["aerospace", "aeronautical_eng", "commercial_pilot", "architecture", "civil_structural"].includes(career.id)) {
-        score += 12;
-        signalsFound.push("exhibits high Spatial Reasoning & 3D Thinking");
+      if (prefSet.has("working_machines") && ["applied_mechanics_tech", "mechanical", "aircraft_maintenance", "marine_engineering", "robotics_automation"].includes(career.id)) {
+        score += 15;
+        if (signalsFound.length < 3) signalsFound.push("enjoys hands-on work with machines & equipment");
       }
-      if (strengthSet.has("attention_detail") && ["ca_auditing", "cybersecurity", "aircraft_maintenance", "pharmacy"].includes(career.id)) {
+      if (prefSet.has("working_data") && ["data_science", "financial_analyst", "ca_auditing", "actuarial_science"].includes(career.id)) {
+        score += 15;
+        if (signalsFound.length < 3) signalsFound.push("enjoys working with data, numbers & statistics");
+      }
+      if (prefSet.has("research_investigation") && (career.category === "Science & Research" || ["biotechnology", "astrophysics", "bioinformatics", "public_health"].includes(career.id))) {
+        score += 15;
+        if (signalsFound.length < 3) signalsFound.push("prefers deep research & investigation");
+      }
+      if (prefSet.has("working_people") && (career.category === "Medical & Healthcare" || career.category === "Education" || ["corporate_law", "actor_performer", "civil_services"].includes(career.id))) {
+        score += 15;
+        if (signalsFound.length < 3) signalsFound.push("enjoys working directly with people & communities");
+      }
+      if (prefSet.has("business_entrepreneurship") && (career.category === "Commerce & Finance" || ["fintech_entrepreneurship", "product_mgmt", "marketing_digital"].includes(career.id))) {
+        score += 15;
+        if (signalsFound.length < 3) signalsFound.push("interested in business, entrepreneurship & strategy");
+      }
+
+      // -----------------------------------------------------------------
+      // 4. HIGH: NATURAL STRENGTHS (+10 PTS)
+      // -----------------------------------------------------------------
+      if (strengthSet.has("problem_solving") && ["cs_software", "ai_ml", "cybersecurity", "mechanical", "aerospace", "web_app_developer", "cloud_devops"].includes(career.id)) {
         score += 10;
-        signalsFound.push("demonstrates keen Attention to Detail");
+        if (signalsFound.length < 3) signalsFound.push("demonstrates strong Problem Solving aptitude");
       }
-      if ((strengthSet.has("leadership") || strengthSet.has("discipline")) && ["defence_army", "defence_navy", "defence_airforce", "civil_services", "merchant_navy_deck"].includes(career.id)) {
-        score += 12;
-        signalsFound.push("demonstrates strong Leadership & Discipline under pressure");
+      if (strengthSet.has("analytical_thinking") && ["data_science", "financial_analyst", "ca_auditing", "astrophysics", "pure_science_maths", "actuarial_science"].includes(career.id)) {
+        score += 10;
+        if (signalsFound.length < 3) signalsFound.push("has natural strength in Analytical Thinking");
+      }
+      if (strengthSet.has("creative_expression") && (career.category === "Creative & Media" || ["ui_ux_design", "content_creation", "actor_performer", "film_director", "cinematographer_camera", "musician_singer"].includes(career.id))) {
+        score += 10;
+        if (signalsFound.length < 3) signalsFound.push("possesses Creative Expression talent");
+      }
+      if (strengthSet.has("public_speaking") && ["actor_performer", "corporate_law", "journalism_media", "civil_services", "maths_educator", "cs_educator"].includes(career.id)) {
+        score += 10;
+        if (signalsFound.length < 3) signalsFound.push("demonstrates Public Speaking & Communication confidence");
+      }
+      if (strengthSet.has("spatial_thinking") && ["aerospace", "aeronautical_eng", "commercial_pilot", "architecture", "civil_structural", "cinematographer_camera"].includes(career.id)) {
+        score += 10;
+        if (signalsFound.length < 3) signalsFound.push("exhibits high Spatial Reasoning & Visual Thinking");
+      }
+      if (strengthSet.has("attention_detail") && ["ca_auditing", "cybersecurity", "aircraft_maintenance", "pharmacy", "company_secretary"].includes(career.id)) {
+        score += 10;
+        if (signalsFound.length < 3) signalsFound.push("demonstrates high Attention to Detail");
+      }
+      if ((strengthSet.has("leadership") || strengthSet.has("discipline")) && (career.category === "Defence" || ["merchant_navy_deck", "film_director", "sports_coach_mgmt", "civil_services"].includes(career.id))) {
+        score += 10;
+        if (signalsFound.length < 3) signalsFound.push("demonstrates Leadership & Discipline");
       }
       if ((strengthSet.has("explaining_concepts") || strengthSet.has("patience")) && career.category === "Education") {
-        score += 12;
-        signalsFound.push("reported natural talent in Explaining Concepts & Patience");
+        score += 10;
+        if (signalsFound.length < 3) signalsFound.push("talented at Explaining Concepts & Mentoring");
       }
 
       // -----------------------------------------------------------------
-      // 4. WORK PREFERENCES & ENVIRONMENT (+15 PTS)
+      // 5. MEDIUM: EXTRACURRICULAR ACTIVITIES (+5 PTS)
       // -----------------------------------------------------------------
-      if (prefSet.has("working_tech") && career.category === "Technology") score += 15;
-      if (prefSet.has("working_machines") && ["applied_mechanics_tech", "mechanical", "aircraft_maintenance", "marine_engineering"].includes(career.id)) score += 15;
-      if (prefSet.has("working_data") && ["data_science", "financial_analyst", "ca_auditing", "actuarial_science"].includes(career.id)) score += 15;
-      if (prefSet.has("research_investigation") && (career.category === "Science & Research" || ["biotechnology", "astrophysics", "bioinformatics"].includes(career.id))) score += 15;
-      if (prefSet.has("working_people") && (career.category === "Medical & Healthcare" || ["physiotherapy", "medicine", "corporate_law"].includes(career.id))) score += 15;
+      if (extraSet.has("coding_clubs") && career.category === "Technology") score += 5;
+      if (extraSet.has("robotics") && ["robotics_automation", "mechanical", "avionics"].includes(career.id)) score += 5;
+      if (extraSet.has("theatre_acting") && ["actor_performer", "film_director"].includes(career.id)) score += 5;
+      if (extraSet.has("photography_club") && ["cinematographer_camera", "content_creation"].includes(career.id)) score += 5;
+      if (extraSet.has("music_band") && career.id === "musician_singer") score += 5;
+      if (extraSet.has("sports_teams") && (career.category === "Sports & Fitness" || career.id === "physiotherapy")) score += 5;
+      if (extraSet.has("ncc") && career.category === "Defence") score += 5;
+      if (extraSet.has("teaching_tutoring") && career.category === "Education") score += 5;
 
       // -----------------------------------------------------------------
-      // 5. EXTRACURRICULAR ACTIVITIES (SUPPORTING ONLY, +8 PTS - NEVER ALONE)
-      // -----------------------------------------------------------------
-      if (extraSet.has("ncc") && ["defence_army", "defence_navy", "defence_airforce", "civil_services"].includes(career.id)) {
-        score += 8;
-        signalsFound.push("supported by NCC cadet experience");
-      }
-      if (extraSet.has("coding_clubs") && career.category === "Technology") {
-        score += 8;
-        signalsFound.push("supported by active participation in Coding Clubs/Hackathons");
-      }
-      if (extraSet.has("robotics") && ["robotics_automation", "mechanical", "avionics"].includes(career.id)) {
-        score += 8;
-        signalsFound.push("supported by hands-on Robotics lab involvement");
-      }
-      if (extraSet.has("teaching_tutoring") && career.category === "Education") {
-        score += 8;
-        signalsFound.push("supported by tutoring & peer mentoring experience");
-      }
-
-      // -----------------------------------------------------------------
-      // 6. HARD MISMATCH & AVOIDANCE PENALTIES (-80 to -100 PTS)
+      // 6. MISMATCH & AVOIDANCE PENALTIES (-40 to -80 PTS)
+      // Prevents illogical recommendations (e.g. CS getting Bioinformatics,
+      // Vocational getting Army without defence interest, etc.)
       // -----------------------------------------------------------------
 
-      // Bug 1 Fix: Bioinformatics requires explicit Biological Science signal!
+      // CS/Maths student getting Bioinformatics without biology/healthcare interest
       if (career.id === "bioinformatics" && !hasBioSignal && !tagSet.has("bioinfo_interest")) {
         score -= 80;
       }
 
-      // Hard penalty for unevidenced Commercial Pilot
+      // Commercial Pilot without aviation/pilot interest
       if (career.id === "commercial_pilot" && !hasPilotInterest) {
         score -= 80;
       }
 
-      // Hard penalty for unevidenced Defence careers
-      if (career.id === "defence_army" && !hasArmyInterest && !hasGeneralDefenceInterest) {
-        score -= 80;
-      }
-      if (career.id === "defence_navy" && !hasNavyInterest && !(hasGeneralDefenceInterest && (tagSet.has("maritime_ocean") || prefSet.has("working_outdoors")))) {
-        score -= 80;
-      }
-      if (career.id === "defence_airforce" && !hasAirForceInterest && !(hasGeneralDefenceInterest && (hasAerospace || hasAeronautical))) {
-        score -= 80;
-      }
-      if (career.id === "defence_tech" && !hasDefenceTechInterest && !hasGeneralDefenceInterest) {
+      // Defence careers (Army, Navy, Air Force, Defence Tech) without defence interest/NCC
+      if (career.category === "Defence" && !hasGeneralDefenceInterest && !extraSet.has("ncc")) {
         score -= 80;
       }
 
-      // Hard penalty for Medicine/Nursing/Dentistry without stream/interests
-      if (career.id === "medicine" && (!["pcb", "pcmb"].includes(stream) || avoidSet.has("avoid_patient_care"))) {
-        score -= 100;
-      }
-      if (["nursing", "dentistry", "physiotherapy"].includes(career.id) && avoidSet.has("avoid_patient_care")) {
-        score -= 100;
-      }
-
-      // Dislike Patient Care penalty for all clinical healthcare
-      if (avoidSet.has("avoid_patient_care") && career.category === "Medical & Healthcare" && career.id !== "biotechnology") {
-        score -= 100;
+      // Clinical Medicine/Dentistry/Nursing/Physio without biology signal OR with patient care avoidance
+      if (["medicine", "nursing", "dentistry", "physiotherapy"].includes(career.id)) {
+        if (!hasBioSignal || avoidSet.has("avoid_patient_care")) {
+          score -= 80;
+        }
       }
 
-      // Dislike Desk/Computer penalty for Technology
-      if (avoidSet.has("avoid_desk_computer") && career.category === "Technology") {
+      // Teaching without teaching interest / tutoring / explaining strength
+      if (career.category === "Education" && !tagSet.has("teaching_interest") && !tagSet.has("maths_teaching_interest") && !tagSet.has("cs_teaching_interest") && !tagSet.has("bio_teaching_interest") && !extraSet.has("teaching_tutoring") && !strengthSet.has("explaining_concepts")) {
+        score -= 40;
+      }
+
+      // Professional Athlete without sports athlete interest / sports teams
+      if (career.id === "professional_athlete" && !tagSet.has("sports_athlete_interest") && !extraSet.has("sports_teams")) {
         score -= 60;
       }
 
-      // Teaching penalty if no teaching/explaining signals
-      if (career.category === "Education" && !hasTeaching && !strengthSet.has("explaining_concepts") && !extraSet.has("teaching_tutoring")) {
+      // Avoid desk / computer penalty for purely tech/desk careers
+      if (avoidSet.has("avoid_desk_computer") && (career.category === "Technology" || career.id === "ca_auditing")) {
         score -= 50;
+      }
+
+      // Avoid public speaking penalty for acting / law / journalism
+      if (avoidSet.has("avoid_public_speaking") && ["actor_performer", "corporate_law", "journalism_media"].includes(career.id)) {
+        score -= 60;
       }
 
       // -----------------------------------------------------------------
       // 7. RATIONALE STATEMENT GENERATION
       // -----------------------------------------------------------------
       if (signalsFound.length > 0) {
-        const signalText = signalsFound.slice(0, 3).join(", ");
+        const uniqueSignals = Array.from(new Set(signalsFound));
+        const signalText = uniqueSignals.slice(0, 3).join(", ");
         reasons.push(`Appeared because you ${signalText}.`);
       } else {
         reasons.push(`Appeared based on broad compatibility with your reported academic preferences.`);
       }
 
-      // Final score normalization (capped 100%)
+      // Score normalization (capped 100%, min 0)
       const matchScore = Math.max(0, Math.min(100, Math.round(score)));
+
+      let matchLabel = "Worth Exploring";
+      if (matchScore >= 75) {
+        matchLabel = "Strong Match to Explore";
+      } else if (matchScore >= 55) {
+        matchLabel = "Good Match to Explore";
+      } else if (matchScore >= 35) {
+        matchLabel = "Worth Exploring";
+      } else {
+        matchLabel = "Another Pathway to Consider";
+      }
 
       scoredCareers.push({
         career,
         matchScore,
         matchPercent: `${matchScore}%`,
+        matchLabel,
         reasons
       });
     });
 
     // -----------------------------------------------------------------
-    // 8. CONFIDENCE THRESHOLDING & SORTING
+    // 8. CONFIDENCE THRESHOLDING & TOP 5 SELECTION
     // -----------------------------------------------------------------
     scoredCareers.sort((a, b) => b.matchScore - a.matchScore);
 
-    let topMatches = scoredCareers.filter(item => item.matchScore >= 30);
+    // Pick top 5 relevant careers
+    let topMatches = scoredCareers.slice(0, 5);
 
-    if (topMatches.length < 3) {
-      topMatches = scoredCareers.slice(0, 5);
-    } else if (topMatches.length > 6) {
-      topMatches = topMatches.slice(0, 6);
+    // Guarantee non-empty results fallback
+    if (topMatches.length === 0 || topMatches[0].matchScore < 10) {
+      topMatches = scoredCareers.slice(0, 5).map(item => ({
+        ...item,
+        matchScore: Math.max(item.matchScore, 40),
+        matchPercent: `${Math.max(item.matchScore, 40)}%`,
+        matchLabel: "Worth Exploring"
+      }));
     }
 
     return {
