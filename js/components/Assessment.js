@@ -1,10 +1,12 @@
-// CAREERQUEST AI - Premium Assessment Questionnaire View Component
+// CAREERQUEST AI - Single-Question Assessment View Component with Restart Modal
 
 (function() {
-  function renderAssessment(currentStep, assessmentState = {}) {
-    const totalSteps = 5;
-    const progressPercent = Math.round((currentStep / totalSteps) * 100);
+  function getAssessmentTotalSteps(stream) {
+    const streamQuestions = (window.STREAM_QUESTIONS && stream && window.STREAM_QUESTIONS[stream]) || [];
+    return 1 + streamQuestions.length + 3; // Stream + Stream Questions + Extras + Strengths + Prefs
+  }
 
+  function renderAssessment(currentStep, assessmentState = {}) {
     const {
       stream = "",
       streamAnswers = [],
@@ -12,47 +14,48 @@
       strengths = [],
       preferences = [],
       showValidation = false,
+      showRestartModal = false,
       navDirection = "next"
     } = assessmentState;
 
-    // Check validity of current step
+    const streamQuestions = (window.STREAM_QUESTIONS && stream && window.STREAM_QUESTIONS[stream]) || [];
+    const totalSteps = getAssessmentTotalSteps(stream);
+    const safeStep = Math.min(currentStep, totalSteps);
+    const progressPercent = Math.round((safeStep / totalSteps) * 100);
+
+    // Determine current question type & data
+    let currentQType = "stream"; // "stream", "stream_q", "extras", "strengths", "prefs"
+    let currentStreamQ = null;
     let isCurrentStepValid = false;
-    if (currentStep === 1) isCurrentStepValid = !!stream;
-    else if (currentStep === 2) isCurrentStepValid = (streamAnswers || []).length >= 1;
-    else if (currentStep === 3) isCurrentStepValid = (extracurriculars || []).length >= 1;
-    else if (currentStep === 4) isCurrentStepValid = (strengths || []).length >= 1;
-    else if (currentStep === 5) isCurrentStepValid = (preferences || []).length >= 1;
 
-    // Section context badges & labels
-    const sectionBadges = [
-      "1. ACADEMIC STREAM FOUNDATION",
-      "2. SUBJECT INTERESTS & SPECIFIC FIELDS",
-      "3. EXTRACURRICULAR & SUPPORTING ACTIVITIES",
-      "4. NATURAL STRENGTHS & APTITUDES",
-      "5. CAREER & WORK PREFERENCES"
-    ];
-
-    const contextLabels = [
-      "Let's start with your Class 12 academic foundation.",
-      "Let's understand your subject interests and academic focus.",
-      "Now let's explore your activities and supporting pursuits.",
-      "Next, let's look at your natural strengths and problem-solving style.",
-      "Finally, let's explore the work environment and impact you want to make."
-    ];
-
-    const currentSectionBadge = sectionBadges[currentStep - 1] || `STEP ${currentStep}`;
-    const currentContextLabel = contextLabels[currentStep - 1] || "Guide your career discovery.";
+    if (safeStep === 1) {
+      currentQType = "stream";
+      isCurrentStepValid = !!stream;
+    } else if (safeStep >= 2 && safeStep <= 1 + streamQuestions.length) {
+      currentQType = "stream_q";
+      currentStreamQ = streamQuestions[safeStep - 2];
+      isCurrentStepValid = (streamAnswers || []).length >= 1;
+    } else if (safeStep === 2 + streamQuestions.length) {
+      currentQType = "extras";
+      isCurrentStepValid = (extracurriculars || []).length >= 1;
+    } else if (safeStep === 3 + streamQuestions.length) {
+      currentQType = "strengths";
+      isCurrentStepValid = (strengths || []).length >= 1;
+    } else if (safeStep === 4 + streamQuestions.length) {
+      currentQType = "prefs";
+      isCurrentStepValid = (preferences || []).length >= 1;
+    }
 
     let stepTitle = "";
     let stepSubtitle = "";
     let stepContentHtml = "";
 
     // -------------------------------------------------------------
-    // STEP 1: CLASS 12 ACADEMIC STREAM
+    // QUESTION 1: STREAM SELECTION
     // -------------------------------------------------------------
-    if (currentStep === 1) {
+    if (currentQType === "stream") {
       stepTitle = "What stream did you study in Class 12?";
-      stepSubtitle = "Select your Class 12 academic background. Subsequent questions will dynamically adjust to your stream.";
+      stepSubtitle = "Select your academic stream to personalize the assessment.";
 
       const streamOptionsHtml = (window.STREAMS || []).map((s, idx) => {
         const isSelected = stream === s.id;
@@ -61,7 +64,7 @@
                   class="quiz-option-btn stream-quiz-option stagger-item ${isSelected ? 'selected' : ''}" 
                   data-stream-choice="${s.id}" 
                   aria-pressed="${isSelected}"
-                  style="animation-delay: ${idx * 0.05}s">
+                  style="animation-delay: ${idx * 0.04}s">
             <div class="quiz-option-icon-badge">${s.icon}</div>
             <div class="quiz-option-content flex-1 text-left">
               <div class="quiz-option-title">${s.title}</div>
@@ -73,80 +76,57 @@
       }).join("");
 
       stepContentHtml = `
-        <div class="quiz-options-grid stream-options-grid col-2" id="quizOptionsContainer">
+        <div class="quiz-options-grid col-2" id="quizOptionsContainer">
           ${streamOptionsHtml}
         </div>
       `;
     }
 
     // -------------------------------------------------------------
-    // STEP 2: STREAM-SPECIFIC SUBJECT INTERESTS
+    // STREAM-SPECIFIC INDIVIDUAL QUESTION (1 AT A TIME)
     // -------------------------------------------------------------
-    else if (currentStep === 2) {
-      const streamObj = (window.STREAMS || []).find(s => s.id === stream);
-      const streamTitle = streamObj ? streamObj.title : 'Stream';
-      stepTitle = `Academic & Subject Interests (${streamTitle})`;
-      stepSubtitle = "Select at least one specific topic or problem-solving direction that excites you most.";
+    else if (currentQType === "stream_q" && currentStreamQ) {
+      stepTitle = currentStreamQ.question;
+      stepSubtitle = currentStreamQ.subtitle || "Select all options that excite you.";
 
-      const questionsList = (window.STREAM_QUESTIONS && window.STREAM_QUESTIONS[stream]) || [];
-
-      if (questionsList.length === 0) {
-        stepContentHtml = `
-          <div class="glass-panel p-6 text-center text-muted" id="quizOptionsContainer">
-            General assessment questions tailored for your selected stream.
-          </div>
+      const optionsHtml = currentStreamQ.options.map((opt, idx) => {
+        const isSelected = (streamAnswers || []).includes(opt.id);
+        return `
+          <button type="button" 
+                  class="quiz-option-btn multi-quiz-option stagger-item ${isSelected ? 'selected' : ''}" 
+                  data-stream-ans="${opt.id}" 
+                  aria-pressed="${isSelected}"
+                  style="animation-delay: ${idx * 0.04}s">
+            <div class="quiz-option-content flex-1 text-left">
+              <div class="quiz-option-title">${opt.label}</div>
+            </div>
+            <div class="quiz-check-indicator">${isSelected ? '✓' : '+'}</div>
+          </button>
         `;
-      } else {
-        stepContentHtml = `
-          <div id="quizOptionsContainer" class="quiz-questions-wrapper">
-            ${questionsList.map((q, qIndex) => {
-              const optionsHtml = q.options.map((opt, oIdx) => {
-                const isSelected = streamAnswers.includes(opt.id);
-                return `
-                  <button type="button" 
-                          class="quiz-option-btn multi-quiz-option stagger-item ${isSelected ? 'selected' : ''}" 
-                          data-stream-ans="${opt.id}" 
-                          aria-pressed="${isSelected}"
-                          style="animation-delay: ${(qIndex * 4 + oIdx) * 0.04}s">
-                    <div class="quiz-option-content flex-1 text-left">
-                      <span class="quiz-option-title">${opt.label}</span>
-                    </div>
-                    <div class="quiz-check-indicator">${isSelected ? '✓' : '+'}</div>
-                  </button>
-                `;
-              }).join("");
+      }).join("");
 
-              return `
-                <div class="quiz-question-block mb-6">
-                  <h4 class="quiz-question-text mb-3">
-                    <span class="q-num-badge">${qIndex + 1}</span> ${q.question}
-                  </h4>
-                  <div class="quiz-options-grid col-2">
-                    ${optionsHtml}
-                  </div>
-                </div>
-              `;
-            }).join("")}
-          </div>
-        `;
-      }
+      stepContentHtml = `
+        <div class="quiz-options-grid col-2" id="quizOptionsContainer">
+          ${optionsHtml}
+        </div>
+      `;
     }
 
     // -------------------------------------------------------------
-    // STEP 3: EXTRACURRICULAR ACTIVITIES & PURSUITS
+    // EXTRACURRICULAR ACTIVITIES
     // -------------------------------------------------------------
-    else if (currentStep === 3) {
-      stepTitle = "Other Interests & Activities";
-      stepSubtitle = "Select at least one activity or hobby. These act as supporting signals for your exploration profile.";
+    else if (currentQType === "extras") {
+      stepTitle = "What activities do you enjoy?";
+      stepSubtitle = "Select hobbies or student activities (supporting signals).";
 
       const optionsHtml = (window.EXTRACURRICULAR_OPTIONS || []).map((item, idx) => {
-        const isSelected = extracurriculars.includes(item.id);
+        const isSelected = (extracurriculars || []).includes(item.id);
         return `
           <button type="button" 
                   class="pill-quiz-option stagger-item ${isSelected ? 'selected' : ''}" 
                   data-extra-ans="${item.id}" 
                   aria-pressed="${isSelected}"
-                  style="animation-delay: ${idx * 0.03}s">
+                  style="animation-delay: ${idx * 0.025}s">
             <span class="pill-icon">${item.icon}</span>
             <span class="pill-label">${item.label}</span>
             <span class="pill-check">${isSelected ? '✓' : '+'}</span>
@@ -162,20 +142,20 @@
     }
 
     // -------------------------------------------------------------
-    // STEP 4: NATURAL STRENGTHS & APTITUDES
+    // NATURAL STRENGTHS
     // -------------------------------------------------------------
-    else if (currentStep === 4) {
-      stepTitle = "What are your natural strengths?";
-      stepSubtitle = "Select at least 1 key strength that describes your problem-solving style and abilities.";
+    else if (currentQType === "strengths") {
+      stepTitle = "What are your top strengths?";
+      stepSubtitle = "Select qualities that describe how you solve problems.";
 
       const optionsHtml = (window.STRENGTHS_OPTIONS || []).map((item, idx) => {
-        const isSelected = strengths.includes(item.id);
+        const isSelected = (strengths || []).includes(item.id);
         return `
           <button type="button" 
                   class="pill-quiz-option strength-pill stagger-item ${isSelected ? 'selected' : ''}" 
                   data-strength-ans="${item.id}" 
                   aria-pressed="${isSelected}"
-                  style="animation-delay: ${idx * 0.03}s">
+                  style="animation-delay: ${idx * 0.025}s">
             <span class="pill-icon">${item.icon}</span>
             <span class="pill-label">${item.label}</span>
             <span class="pill-check">${isSelected ? '✓' : '+'}</span>
@@ -191,20 +171,20 @@
     }
 
     // -------------------------------------------------------------
-    // STEP 5: CAREER & WORK PREFERENCES
+    // CAREER & WORK PREFERENCES
     // -------------------------------------------------------------
-    else if (currentStep === 5) {
-      stepTitle = "Career & Work Preferences";
-      stepSubtitle = "What type of work environment or purpose appeals most to your ideal future?";
+    else if (currentQType === "prefs") {
+      stepTitle = "What work style appeals to you?";
+      stepSubtitle = "Select your ideal future work environment and purpose.";
 
       const optionsHtml = (window.PREFERENCES_OPTIONS || []).map((item, idx) => {
-        const isSelected = preferences.includes(item.id);
+        const isSelected = (preferences || []).includes(item.id);
         return `
           <button type="button" 
                   class="quiz-option-btn multi-quiz-option pref-quiz-option stagger-item ${isSelected ? 'selected' : ''}" 
                   data-pref-ans="${item.id}" 
                   aria-pressed="${isSelected}"
-                  style="animation-delay: ${idx * 0.04}s">
+                  style="animation-delay: ${idx * 0.035}s">
             <div class="quiz-option-icon-badge">${item.icon}</div>
             <div class="quiz-option-content flex-1 text-left">
               <span class="quiz-option-title">${item.label}</span>
@@ -221,64 +201,74 @@
       `;
     }
 
-    // Directional transition animation class
+    // Slide transition animation
     const slideAnimClass = navDirection === "back" ? "quiz-slide-back" : "quiz-slide-next";
+
+    // Restart Modal HTML
+    const restartModalHtml = showRestartModal ? `
+      <div class="modal-overlay active" id="restartModalOverlay">
+        <div class="glass-panel restart-modal-card">
+          <div class="restart-modal-icon">🔄</div>
+          <h3 class="restart-modal-title mt-2">Restart the assessment?</h3>
+          <p class="restart-modal-text mt-2">Your current answers will be cleared and you will start over from Question 1.</p>
+          <div class="restart-modal-actions mt-6 flex justify-center gap-3">
+            <button type="button" class="secondary-btn" id="cancelRestartBtn">Cancel</button>
+            <button type="button" class="primary-btn danger-btn" id="confirmRestartBtn">Restart Test</button>
+          </div>
+        </div>
+      </div>
+    ` : '';
 
     return `
       <div class="assessment-container container section-padding">
         <div class="assessment-card glass-panel ${slideAnimClass}" id="quizCardPanel">
-          <!-- TOP: Brand Bar & Progress Tracker -->
+          <!-- TOP HEADER BAR: Step tracker, Restart, Progress Bar -->
           <div class="quiz-header">
-            <div class="quiz-top-bar flex justify-between items-center mb-3">
-              <div class="section-pill-badge">
+            <div class="quiz-top-nav-bar flex justify-between items-center mb-3">
+              <div class="quiz-counter-pill">
                 <span class="pulse-spark">✨</span>
-                <span>${currentSectionBadge}</span>
+                <span>Question ${safeStep} of ${totalSteps}</span>
               </div>
-              <div class="quiz-step-percent">${progressPercent}% Completed</div>
+              <button type="button" class="restart-test-btn" id="triggerRestartModalBtn" title="Restart Assessment">
+                <span>🔄</span>
+                <span>Restart Test</span>
+              </button>
             </div>
 
-            <div class="progress-info-row flex justify-between items-center mb-2">
-              <span class="quiz-step-counter">Question ${currentStep} of ${totalSteps}</span>
-              <span class="quiz-context-label">${currentContextLabel}</span>
-            </div>
-
-            <!-- Animated Progress Bar -->
-            <div class="progress-track mt-1">
+            <!-- Compact Animated Progress Bar -->
+            <div class="progress-track mt-1 mb-4">
               <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
             </div>
 
-            <h2 class="quiz-step-title mt-5">${stepTitle}</h2>
-            <p class="quiz-step-subtitle">${stepSubtitle}</p>
+            <h2 class="quiz-step-title mt-2">${stepTitle}</h2>
+            ${stepSubtitle ? `<p class="quiz-step-subtitle mt-1">${stepSubtitle}</p>` : ''}
           </div>
 
-          <!-- CENTER: Inline Validation Alert Banner -->
+          <!-- CENTER: Inline Validation Alert -->
           <div class="quiz-validation-banner ${showValidation ? '' : 'hidden'} mt-4" id="quizValidationBanner">
             <span class="val-icon">⚠️</span>
-            <span>Please select an answer to continue.</span>
+            <span>Choose an option to continue.</span>
           </div>
 
-          <!-- CENTER: Question Options Content Body -->
-          <div class="quiz-body mt-6">
+          <!-- CENTER: Question Options Area -->
+          <div class="quiz-body mt-5">
             ${stepContentHtml}
           </div>
 
           <!-- BOTTOM: Navigation Footer Controls -->
           <div class="quiz-footer mt-8">
-            <button class="secondary-btn quiz-back-btn" ${currentStep === 1 ? 'disabled' : ''} id="quizBackBtn" aria-label="Previous question">
+            <button type="button" class="secondary-btn quiz-back-btn" ${safeStep === 1 ? 'disabled' : ''} id="quizBackBtn" aria-label="Previous question">
               ← Back
             </button>
 
-            <button class="tertiary-btn quiz-clear-btn" id="quizClearBtn" aria-label="Clear current selection">
-              Clear Selection
-            </button>
-
-            <button class="primary-btn quiz-next-btn ${isCurrentStepValid ? 'valid' : 'disabled-state'}" id="quizNextBtn" aria-label="Next question">
-              <span>${currentStep === totalSteps ? 'Analyze Profile ✨' : 'Next Step'}</span>
+            <button type="button" class="primary-btn quiz-next-btn ${isCurrentStepValid ? 'valid' : 'disabled-state'}" id="quizNextBtn" aria-label="Next question">
+              <span>${safeStep === totalSteps ? 'Analyze Profile ✨' : 'Next Step'}</span>
               <span class="btn-arrow">→</span>
             </button>
           </div>
         </div>
       </div>
+      ${restartModalHtml}
     `;
   }
 
@@ -290,9 +280,9 @@
   }
 
   function initAssessmentEvents(currentStep, assessmentState, callbacks) {
-    const { onSelectStream, onToggleAnswer, onNext, onBack, onClear } = callbacks;
+    const { onSelectStream, onToggleAnswer, onNext, onBack, onRequestRestart, onCancelRestart, onConfirmRestart } = callbacks;
 
-    // Step 1 Stream Selection
+    // Step 1 Stream Choice
     document.querySelectorAll('[data-stream-choice]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         hideValidationBanner();
@@ -301,7 +291,7 @@
       });
     });
 
-    // Step 2 Stream Answer Toggles
+    // Stream Answer Choice
     document.querySelectorAll('[data-stream-ans]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         hideValidationBanner();
@@ -310,7 +300,7 @@
       });
     });
 
-    // Step 3 Extracurricular Toggles
+    // Extracurricular Choice
     document.querySelectorAll('[data-extra-ans]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         hideValidationBanner();
@@ -319,7 +309,7 @@
       });
     });
 
-    // Step 4 Strength Toggles
+    // Strength Choice
     document.querySelectorAll('[data-strength-ans]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         hideValidationBanner();
@@ -328,7 +318,7 @@
       });
     });
 
-    // Step 5 Preference Toggles
+    // Preference Choice
     document.querySelectorAll('[data-pref-ans]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         hideValidationBanner();
@@ -345,12 +335,29 @@
     const nextBtn = document.getElementById('quizNextBtn');
     if (nextBtn) nextBtn.addEventListener('click', onNext);
 
-    // Clear Button
-    const clearBtn = document.getElementById('quizClearBtn');
-    if (clearBtn) clearBtn.addEventListener('click', onClear);
+    // Trigger Restart Modal Button
+    const restartBtn = document.getElementById('triggerRestartModalBtn');
+    if (restartBtn) restartBtn.addEventListener('click', onRequestRestart);
+
+    // Cancel Restart Button
+    const cancelRestartBtn = document.getElementById('cancelRestartBtn');
+    if (cancelRestartBtn) cancelRestartBtn.addEventListener('click', onCancelRestart);
+
+    // Confirm Restart Button
+    const confirmRestartBtn = document.getElementById('confirmRestartBtn');
+    if (confirmRestartBtn) confirmRestartBtn.addEventListener('click', onConfirmRestart);
+
+    // Click outside modal overlay to cancel
+    const overlay = document.getElementById('restartModalOverlay');
+    if (overlay) {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay && onCancelRestart) onCancelRestart();
+      });
+    }
   }
 
   window.CQ_ASSESSMENT = {
+    getAssessmentTotalSteps,
     renderAssessment,
     initAssessmentEvents
   };

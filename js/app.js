@@ -84,10 +84,12 @@
         }
         break;
 
-      case "assessment":
-        // Fallback check to prevent invalid step
-        if (!appState.assessmentStep || appState.assessmentStep < 1 || appState.assessmentStep > 5) {
+      case "assessment": {
+        const totalSteps = window.CQ_ASSESSMENT ? window.CQ_ASSESSMENT.getAssessmentTotalSteps(appState.stream) : 5;
+        if (!appState.assessmentStep || appState.assessmentStep < 1) {
           appState.assessmentStep = 1;
+        } else if (appState.assessmentStep > totalSteps) {
+          appState.assessmentStep = totalSteps;
         }
 
         contentHtml = window.CQ_ASSESSMENT ? window.CQ_ASSESSMENT.renderAssessment(appState.assessmentStep, appState) : "";
@@ -109,13 +111,23 @@
               renderApp();
             },
             onNext: () => {
-              // Strict step validation
+              const streamQuestions = (window.STREAM_QUESTIONS && appState.stream && window.STREAM_QUESTIONS[appState.stream]) || [];
+              const maxSteps = window.CQ_ASSESSMENT.getAssessmentTotalSteps(appState.stream);
+              const currentStep = appState.assessmentStep || 1;
+
+              // Step validation check
               let isValid = false;
-              if (appState.assessmentStep === 1) isValid = !!appState.stream;
-              else if (appState.assessmentStep === 2) isValid = (appState.streamAnswers || []).length >= 1;
-              else if (appState.assessmentStep === 3) isValid = (appState.extracurriculars || []).length >= 1;
-              else if (appState.assessmentStep === 4) isValid = (appState.strengths || []).length >= 1;
-              else if (appState.assessmentStep === 5) isValid = (appState.preferences || []).length >= 1;
+              if (currentStep === 1) {
+                isValid = !!appState.stream;
+              } else if (currentStep >= 2 && currentStep <= 1 + streamQuestions.length) {
+                isValid = (appState.streamAnswers || []).length >= 1;
+              } else if (currentStep === 2 + streamQuestions.length) {
+                isValid = (appState.extracurriculars || []).length >= 1;
+              } else if (currentStep === 3 + streamQuestions.length) {
+                isValid = (appState.strengths || []).length >= 1;
+              } else if (currentStep === 4 + streamQuestions.length) {
+                isValid = (appState.preferences || []).length >= 1;
+              }
 
               if (!isValid) {
                 appState.showValidation = true;
@@ -136,11 +148,12 @@
 
               appState.showValidation = false;
               appState.navDirection = 'next';
-              if (appState.assessmentStep < 5) {
+
+              if (currentStep < maxSteps) {
                 appState.assessmentStep++;
                 renderApp();
               } else {
-                // Step 5 Complete -> Trigger Analysis Loading
+                // Assessment Complete -> Trigger Analysis Loading
                 runAnalysisSequence();
               }
             },
@@ -152,18 +165,29 @@
                 renderApp();
               }
             },
-            onClear: () => {
+            onRequestRestart: () => {
+              appState.showRestartModal = true;
+              renderApp();
+            },
+            onCancelRestart: () => {
+              appState.showRestartModal = false;
+              renderApp();
+            },
+            onConfirmRestart: () => {
+              appState.showRestartModal = false;
               appState.showValidation = false;
-              if (appState.assessmentStep === 1) appState.stream = "";
-              if (appState.assessmentStep === 2) appState.streamAnswers = [];
-              if (appState.assessmentStep === 3) appState.extracurriculars = [];
-              if (appState.assessmentStep === 4) appState.strengths = [];
-              if (appState.assessmentStep === 5) appState.preferences = [];
+              appState.stream = "";
+              appState.streamAnswers = [];
+              appState.extracurriculars = [];
+              appState.strengths = [];
+              appState.preferences = [];
+              appState.assessmentStep = 1;
               renderApp();
             }
           });
         }
         break;
+      }
 
       case "analysis":
         contentHtml = window.CQ_ANALYSIS_LOADING ? window.CQ_ANALYSIS_LOADING.renderAnalysisLoading() : "";

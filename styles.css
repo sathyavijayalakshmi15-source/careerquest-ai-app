@@ -728,6 +728,98 @@ button {
   text-transform: uppercase;
 }
 
+.quiz-counter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(255, 42, 42, 0.12);
+  border: 1px solid rgba(255, 42, 42, 0.35);
+  border-radius: 99px;
+  color: var(--text-white);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.restart-test-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 99px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.restart-test-btn:hover {
+  border-color: rgba(255, 42, 42, 0.5);
+  color: var(--glow-red);
+  background: rgba(255, 42, 42, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Modal Overlay & Card */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.restart-modal-card {
+  max-width: 420px;
+  width: 90%;
+  padding: 2.25rem 1.75rem;
+  text-align: center;
+  border: 1px solid var(--fiery-red);
+  box-shadow: 0 0 35px rgba(255, 42, 42, 0.35);
+  animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes modalScaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.restart-modal-icon {
+  font-size: 2.4rem;
+}
+
+.restart-modal-title {
+  font-size: 1.35rem;
+  color: var(--text-white);
+}
+
+.restart-modal-text {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.danger-btn {
+  background: linear-gradient(135deg, #FF4D4D 0%, #FF2A2A 50%, #B30000 100%) !important;
+  box-shadow: 0 4px 18px rgba(255, 42, 42, 0.4) !important;
+}
+
 .quiz-step-percent {
   color: var(--glow-red);
   font-weight: 700;
