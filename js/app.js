@@ -101,6 +101,8 @@
               appState.stream = streamId;
               appState.streamAnswers = [];
               appState.showValidation = false;
+              appState.navDirection = 'next';
+              appState.assessmentStep = 2;
               renderApp();
             },
             onToggleAnswer: (key, id) => {
@@ -185,7 +187,21 @@
               appState.strengths = [];
               appState.preferences = [];
               appState.avoidances = [];
+              appState.recommendations = null;
+              appState.assessmentCompleted = false;
               appState.assessmentStep = 1;
+              if (window.CAREER_STORAGE) {
+                window.CAREER_STORAGE.saveState({
+                  stream: "",
+                  streamAnswers: [],
+                  extracurriculars: [],
+                  strengths: [],
+                  preferences: [],
+                  avoidances: [],
+                  recommendations: null,
+                  assessmentCompleted: false
+                });
+              }
               renderApp();
             }
           });

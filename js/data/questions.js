@@ -17,14 +17,14 @@ window.STREAMS = [
   },
   {
     id: "pcmb",
-    title: "Science – PCMB",
+    title: "Science – PCMB / Bio-Maths",
     subtitle: "Physics, Chemistry, Maths & Biology",
     description: "Dual focus on biological sciences and quantitative engineering.",
     icon: "🔬"
   },
   {
     id: "cs_maths",
-    title: "Science – CS + Maths",
+    title: "Science – Computer Science + Maths",
     subtitle: "Computer Science & Mathematics",
     description: "Focus on software coding, logic, computers, and digital tech.",
     icon: "💻"
@@ -121,6 +121,9 @@ window.PREFERENCES_OPTIONS = [
   { id: "aviation_pilot_pref", label: "Flying commercial aircraft", icon: "✈️" },
   { id: "business_entrepreneurship", label: "Business, markets & startups", icon: "📈" },
   { id: "teaching_explaining", label: "Teaching & sharing knowledge", icon: "📚" },
+  { id: "high_responsibility", label: "High-responsibility roles", icon: "🚀" }
+];
+
 // Avoidance Options (Negative / Dislike Signals)
 window.AVOIDANCE_OPTIONS = [
   { id: "avoid_patient_care", label: "Patient-facing work", icon: "🚫" },

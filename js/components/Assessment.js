@@ -236,6 +236,38 @@
       `;
     }
 
+    // Fallback Safety Protection (Requirement 4: Never render empty options)
+    if (!stepContentHtml || stepContentHtml.trim() === "") {
+      const fallbackStreams = (window.STREAMS && window.STREAMS.length > 0) ? window.STREAMS : [
+        { id: "pcm", title: "Science – PCM", subtitle: "Physics, Chemistry & Mathematics", icon: "📐" },
+        { id: "pcb", title: "Science – PCB", subtitle: "Physics, Chemistry & Biology", icon: "🧬" },
+        { id: "pcmb", title: "Science – PCMB / Bio-Maths", subtitle: "Physics, Chemistry, Maths & Biology", icon: "🔬" },
+        { id: "cs_maths", title: "Science – Computer Science + Maths", subtitle: "Computer Science & Mathematics", icon: "💻" },
+        { id: "commerce", title: "Commerce", subtitle: "Accounts, Finance & Business", icon: "📊" },
+        { id: "arts", title: "Humanities / Arts", subtitle: "Law, History, Psychology & Policy", icon: "⚖️" },
+        { id: "vocational", title: "Vocational / Other", subtitle: "Applied Technical & Practical Skills", icon: "🛠️" }
+      ];
+
+      stepTitle = "What stream did you study in Class 12?";
+      stepSubtitle = "Select your academic stream to personalize the assessment.";
+      stepContentHtml = `
+        <div class="quiz-options-grid col-2" id="quizOptionsContainer">
+          ${fallbackStreams.map(s => `
+            <button type="button" 
+                    class="quiz-option-btn stream-quiz-option stagger-item ${stream === s.id ? 'selected' : ''}" 
+                    data-stream-choice="${s.id}">
+              <div class="quiz-option-icon-badge">${s.icon}</div>
+              <div class="quiz-option-content flex-1 text-left">
+                <div class="quiz-option-title">${s.title}</div>
+                <div class="quiz-option-sub">${s.subtitle}</div>
+              </div>
+              <div class="quiz-check-indicator">${stream === s.id ? '✓' : '+'}</div>
+            </button>
+          `).join('')}
+        </div>
+      `;
+    }
+
     // Slide transition animation
     const slideAnimClass = navDirection === "back" ? "quiz-slide-back" : "quiz-slide-next";
 
