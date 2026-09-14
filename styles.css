@@ -1626,6 +1626,51 @@ button {
   scroll-behavior: smooth;
 }
 
+/* Modal 3-Column Responsive Layout */
+.modal-header-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 42, 42, 0.15);
+  border: 1px solid var(--fiery-red);
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.why-suited-box {
+  background: rgba(255, 42, 42, 0.08);
+  border-left: 3px solid var(--fiery-red);
+  border-radius: 8px;
+}
+
+.modal-layout-3col {
+  display: grid;
+  grid-template-columns: 28% 40% 28%;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.modal-col-left, .modal-col-center, .modal-col-right {
+  min-width: 0;
+}
+
+@media (min-width: 1025px) {
+  .career-modal-box {
+    max-width: 1100px;
+    padding: 2.25rem 2rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .modal-layout-3col {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
 .modal-close-btn {
   position: absolute;
   top: 1.25rem;
