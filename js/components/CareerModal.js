@@ -13,7 +13,7 @@
     const examChips = (career.entranceExams || []).map(e => `<span class="exam-chip">${e}</span>`).join("");
     const skillChips = (career.usefulSkills || []).map(s => `<span class="skill-chip">${s}</span>`).join("");
     const subjectChips = (career.relevantSubjects || []).map(s => `<span class="subj-chip">${s}</span>`).join("");
-    const projectItems = (career.beginnerActivities || []).map(act => `<li class="project-item"><span class="proj-icon">💡</span> ${act}</li>`).join("");
+    const projectItems = (career.beginnerActivities || []).map(act => `<li class="project-item"><span class="proj-icon">💡</span><span class="project-text">${act}</span></li>`).join("");
 
     const jobRoles = career.jobRoles || [
       `Junior ${career.name} Specialist`,
@@ -27,7 +27,7 @@
       "Mid Level: Senior Specialist / Project Lead / Consultant (3–6 years)",
       "Senior Level: Department Head / Director / Industry Expert (7+ years)"
     ];
-    const progressionList = progression.map(p => `<li><span class="reason-bullet">📈</span> ${p}</li>`).join("");
+    const progressionList = progression.map(p => `<li><span class="reason-bullet">📈</span><span class="progression-text">${p}</span></li>`).join("");
 
     const primaryDegreeText = (career.degreePathways && career.degreePathways.length > 0) ? career.degreePathways.join(" or ") : "Relevant Bachelor's Degree";
     const primaryExamsText = (career.entranceExams && career.entranceExams.length > 0) ? career.entranceExams.join(", ") : "Merit-based / Direct Entrance";

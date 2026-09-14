@@ -1411,18 +1411,33 @@ button {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .why-appeared-list li {
   font-size: 0.9rem;
   color: var(--text-white);
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
 }
 
-.reason-bullet { color: var(--fiery-red); }
+.reason-bullet { 
+  color: var(--fiery-red);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.progression-text, .project-text {
+  flex: 1;
+  min-width: 0;
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-height: 1.45;
+}
 
 .sub-label {
   font-size: 0.85rem;
@@ -1436,6 +1451,10 @@ button {
   border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 600;
+  max-width: 100%;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .exam-chip {
@@ -1446,6 +1465,10 @@ button {
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--glow-red);
+  max-width: 100%;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .skill-chip {
@@ -1455,21 +1478,33 @@ button {
   font-size: 0.8rem;
   color: #54A0FF;
   font-weight: 600;
+  max-width: 100%;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .projects-list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .project-item {
   font-size: 0.88rem;
   color: var(--text-muted);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.proj-icon {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
 }
 
 .match-card-footer {
@@ -1649,13 +1684,15 @@ button {
 .modal-top-grid, .modal-bottom-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-  align-items: start;
+  gap: 1.5rem;
+  align-items: stretch;
   width: 100%;
 }
 
 .modal-top-grid > *, .modal-bottom-grid > * {
   min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (min-width: 1025px) {
@@ -1668,7 +1705,7 @@ button {
 @media (max-width: 768px) {
   .modal-top-grid, .modal-bottom-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.25rem;
   }
 }
 
@@ -1707,6 +1744,10 @@ button {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   word-break: normal;
   overflow-wrap: break-word;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .modal-section-card:hover {
