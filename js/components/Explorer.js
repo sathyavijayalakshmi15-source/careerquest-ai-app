@@ -55,11 +55,7 @@
         </div>
 
         <!-- Modal Drawer Container -->
-        <div class="career-modal-backdrop" id="careerModalBackdrop">
-          <div class="career-modal-box glass-panel" id="careerModalBox">
-            <!-- Modal Content rendered dynamically -->
-          </div>
-        </div>
+        <div id="explorerModalWrapper"></div>
       </div>
     `;
   }
@@ -126,80 +122,25 @@
 
   function openCareerModal(careerId) {
     const career = window.getCareerById ? window.getCareerById(careerId) : null;
-    const backdrop = document.getElementById('careerModalBackdrop');
-    const modalBox = document.getElementById('careerModalBox');
+    const wrapper = document.getElementById('explorerModalWrapper');
 
-    if (!career || !backdrop || !modalBox) return;
+    if (!career || !wrapper || !window.CQ_CAREER_MODAL) return;
 
-    modalBox.innerHTML = `
-      <button class="modal-close-btn" id="modalCloseBtn">✕</button>
-      
-      <div class="modal-header">
-        <span class="category-pill">${career.category}</span>
-        <h2 class="modal-title mt-2">${career.name}</h2>
-      </div>
+    wrapper.innerHTML = window.CQ_CAREER_MODAL.renderCareerModalHtml(career);
 
-      <div class="modal-body mt-4">
-        <p class="modal-desc">${career.description}</p>
+    const closeBtns = [document.getElementById('closeCareerModalBtn'), document.getElementById('closeCareerModalFooterBtn')];
+    const closeModal = () => { wrapper.innerHTML = ""; };
 
-        <div class="modal-section mt-4">
-          <h4>Why It Suits Someone:</h4>
-          <p class="text-muted">${career.whySuited}</p>
-        </div>
-
-        <div class="modal-grid-2 col-2 mt-4">
-          <div class="modal-col">
-            <h4>Relevant Subjects:</h4>
-            <div class="chips-flex mt-2">
-              ${career.relevantSubjects.map(s => `<span class="subj-chip">${s}</span>`).join('')}
-            </div>
-          </div>
-
-          <div class="modal-col">
-            <h4>Useful Skills:</h4>
-            <div class="chips-flex mt-2">
-              ${career.usefulSkills.map(sk => `<span class="skill-chip">${sk}</span>`).join('')}
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-section mt-4">
-          <h4>Degree & College Pathways:</h4>
-          <div class="chips-flex mt-2">
-            ${career.degreePathways.map(d => `<span class="pathway-chip">${d}</span>`).join('')}
-          </div>
-        </div>
-
-        <div class="modal-section mt-4">
-          <h4>Key Entrance Exams:</h4>
-          <div class="chips-flex mt-2">
-            ${career.entranceExams.map(e => `<span class="exam-chip">${e}</span>`).join('')}
-          </div>
-        </div>
-
-        <div class="modal-section mt-4">
-          <h4>Beginner Exploration Projects:</h4>
-          <ul class="projects-list mt-2">
-            ${career.beginnerActivities.map(act => `<li><span class="proj-icon">💡</span> ${act}</li>`).join('')}
-          </ul>
-        </div>
-      </div>
-
-      <div class="modal-footer mt-6">
-        <button class="primary-btn w-full" id="modalCloseFooterBtn">Close Profile</button>
-      </div>
-    `;
-
-    backdrop.classList.add('open');
-
-    const closeBtns = [document.getElementById('modalCloseBtn'), document.getElementById('modalCloseFooterBtn')];
     closeBtns.forEach(btn => {
-      if (btn) btn.addEventListener('click', () => backdrop.classList.remove('open'));
+      if (btn) btn.addEventListener('click', closeModal);
     });
 
-    backdrop.addEventListener('click', (e) => {
-      if (e.target === backdrop) backdrop.classList.remove('open');
-    });
+    const backdrop = document.getElementById('careerDetailModalOverlay');
+    if (backdrop) {
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) closeModal();
+      });
+    }
   }
 
   function initExplorerEvents() {

@@ -105,108 +105,12 @@
       `;
     }).join("");
 
-    // Modal HTML for detailed career view (Section 10)
+    // Modal HTML for detailed career view (Section 10 & Section 3/4 Roadmap Layout)
     let detailModalHtml = "";
     if (activeModalCareerId) {
       const activeCareer = (window.CAREERS_DATABASE || []).find(c => c.id === activeModalCareerId);
-      if (activeCareer) {
-        const streamNames = (activeCareer.streamCompatibility || []).map(st => {
-          const foundObj = (window.STREAMS || []).find(s => s.id === st);
-          return foundObj ? foundObj.title : st;
-        }).join(", ");
-
-        const degreeChips = (activeCareer.degreePathways || []).map(d => `<span class="pathway-chip">${d}</span>`).join("");
-        const examChips = (activeCareer.entranceExams || []).map(e => `<span class="exam-chip">${e}</span>`).join("");
-        const skillChips = (activeCareer.usefulSkills || []).map(s => `<span class="skill-chip">${s}</span>`).join("");
-        const projectItems = (activeCareer.beginnerActivities || []).map(act => `<li class="project-item"><span class="proj-icon">💡</span> ${act}</li>`).join("");
-
-        // Derived job roles
-        const jobRoles = activeCareer.jobRoles || [
-          `Junior ${activeCareer.name} Specialist`,
-          `Senior ${activeCareer.name} Professional`,
-          `Lead ${activeCareer.name} Consultant / Manager`
-        ];
-        const jobRoleChips = jobRoles.map(j => `<span class="summary-chip extra">${j}</span>`).join("");
-
-        // Derived career progression
-        const progression = activeCareer.progression || [
-          "Entry Level: Associate / Trainee / Junior Specialist (0–2 years)",
-          "Mid Level: Senior Specialist / Project Lead / Consultant (3–6 years)",
-          "Senior Level: Department Head / Director / Industry Expert (7+ years)"
-        ];
-        const progressionList = progression.map(p => `<li><span class="reason-bullet">📈</span> ${p}</li>`).join("");
-
-        detailModalHtml = `
-          <div class="career-modal-backdrop open" id="careerDetailModalOverlay">
-            <div class="glass-panel career-modal-box">
-              <button type="button" class="modal-close-btn" id="closeCareerModalBtn" aria-label="Close modal">✕</button>
-
-              <div class="modal-header mb-4">
-                <span class="category-pill">${activeCareer.category}</span>
-                <h2 class="career-title mt-2">${activeCareer.name}</h2>
-              </div>
-
-              <div class="modal-body flex flex-col gap-5">
-                <!-- 1. Career Overview -->
-                <div class="modal-section">
-                  <h4 class="sub-label">1. Career Overview</h4>
-                  <p class="mt-1 text-muted">${activeCareer.description}</p>
-                  ${activeCareer.whySuited ? `<p class="mt-2 text-sm text-red-glow"><strong>Key Suitability:</strong> ${activeCareer.whySuited}</p>` : ''}
-                </div>
-
-                <!-- 2. What to Study After Class 12 -->
-                <div class="modal-section">
-                  <h4 class="sub-label">2. What to Study After Class 12</h4>
-                  <p class="mt-1 text-sm"><strong>Eligible Class 12 Streams:</strong> ${streamNames}</p>
-                  <h5 class="sub-label mt-2">Key Entrance Exams:</h5>
-                  <div class="chips-flex mt-1">${examChips || '<span class="text-muted">Merit-based / Direct Admission</span>'}</div>
-                </div>
-
-                <!-- 3. Relevant Bachelor's Degree -->
-                <div class="modal-section">
-                  <h4 class="sub-label">3. Relevant Bachelor's Degree Pathways</h4>
-                  <div class="chips-flex mt-2">${degreeChips}</div>
-                </div>
-
-                <!-- 4. Higher-Study Pathway -->
-                <div class="modal-section">
-                  <h4 class="sub-label">4. Higher-Study & Specialization Pathway</h4>
-                  <p class="mt-1 text-sm text-muted">
-                    Postgraduate options: Master's Degree (M.Tech / M.Sc / MS / MBA), Specialist Diplomas, or Professional Certifications.
-                  </p>
-                </div>
-
-                <!-- 5. Skills to Develop -->
-                <div class="modal-section">
-                  <h4 class="sub-label">5. Skills to Develop</h4>
-                  <div class="chips-flex mt-2">${skillChips}</div>
-                </div>
-
-                <!-- 6. Beginner Exploration Activities -->
-                <div class="modal-section">
-                  <h4 class="sub-label">6. Beginner Exploration Activities</h4>
-                  <ul class="projects-list mt-2">${projectItems}</ul>
-                </div>
-
-                <!-- 7. Possible Job Roles -->
-                <div class="modal-section">
-                  <h4 class="sub-label">7. Possible Job Roles</h4>
-                  <div class="chips-flex mt-2">${jobRoleChips}</div>
-                </div>
-
-                <!-- 8. Career Progression -->
-                <div class="modal-section">
-                  <h4 class="sub-label">8. Career Progression</h4>
-                  <ul class="why-appeared-list mt-2">${progressionList}</ul>
-                </div>
-              </div>
-
-              <div class="modal-footer mt-6 flex justify-end">
-                <button type="button" class="secondary-btn" id="closeCareerModalFooterBtn">Close Profile</button>
-              </div>
-            </div>
-          </div>
-        `;
+      if (activeCareer && window.CQ_CAREER_MODAL) {
+        detailModalHtml = window.CQ_CAREER_MODAL.renderCareerModalHtml(activeCareer);
       }
     }
 
