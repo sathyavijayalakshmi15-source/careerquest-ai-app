@@ -1,6 +1,6 @@
-// CAREERQUEST AI - Results Page View Component
-
 (function() {
+  let activeModalCareerId = null;
+
   function renderResults(recommendationsData, state = {}) {
     // Defensive fallback: Ensure recommendationsData & topMatches exist
     if (!recommendationsData || !recommendationsData.topMatches || recommendationsData.topMatches.length === 0) {
@@ -18,7 +18,7 @@
         career: c,
         matchScore: 60,
         matchPercent: "60%",
-        matchLabel: "Worth Exploring",
+        matchLabel: "Good Pathway to Explore",
         reasons: ["Appeared as a directional pathway worth exploring."]
       }));
     }
@@ -48,45 +48,16 @@
       return eObj ? eObj.label : eId;
     });
 
+    // Clean, focused result cards
     const careerCardsHtml = topMatches.map((item, index) => {
       const { career, matchPercent, reasons = [] } = item;
       if (!career) return "";
 
-      let matchTierLabel = item.matchLabel || "Strong Match to Explore";
-      if (item.matchScore >= 75) {
-        matchTierLabel = "Strong Match to Explore";
-      } else if (item.matchScore >= 55) {
-        matchTierLabel = "Good Match to Explore";
-      } else if (item.matchScore >= 35) {
-        matchTierLabel = "Worth Exploring";
-      } else {
-        matchTierLabel = "Another Pathway to Consider";
-      }
-
-      const selectedCount = (state.streamAnswers || []).length + (state.strengths || []).length + (state.preferences || []).length;
-      if (selectedCount <= 2 && item.matchScore < 45) {
-        matchTierLabel = "Worth Exploring";
-      }
+      const matchTierLabel = item.matchLabel || "Strong Match to Explore";
 
       const safeReasons = (reasons && reasons.length > 0) ? reasons : ["Appeared based on broad compatibility with your reported preferences."];
       const reasonsHtml = safeReasons.map(r => `
         <li><span class="reason-bullet">✦</span> ${r}</li>
-      `).join("");
-
-      const pathwaysHtml = (career.degreePathways || []).map(p => `
-        <span class="pathway-chip">${p}</span>
-      `).join("");
-
-      const examsHtml = (career.entranceExams || []).map(e => `
-        <span class="exam-chip">${e}</span>
-      `).join("");
-
-      const skillsHtml = (career.usefulSkills || []).map(sk => `
-        <span class="skill-chip">${sk}</span>
-      `).join("");
-
-      const projectsHtml = (career.beginnerActivities || []).map(act => `
-        <li class="project-item"><span class="proj-icon">💡</span> ${act}</li>
       `).join("");
 
       return `
@@ -111,44 +82,133 @@
                 ${reasonsHtml}
               </ul>
             </div>
-
-            <!-- Relevant Pathways & Exams -->
-            <div class="pathways-section mt-5">
-              <h5 class="sub-label">College & Degree Pathways:</h5>
-              <div class="chips-flex mt-2">${pathwaysHtml}</div>
-
-              <h5 class="sub-label mt-3">Key Entrance Exams:</h5>
-              <div class="chips-flex mt-2">${examsHtml}</div>
-            </div>
-
-            <!-- Skills to Develop -->
-            <div class="skills-section mt-4">
-              <h5 class="sub-label">Skills To Develop:</h5>
-              <div class="chips-flex mt-2">${skillsHtml}</div>
-            </div>
-
-            <!-- Beginner Projects -->
-            <div class="projects-section mt-4">
-              <h5 class="sub-label">Beginner Exploration Projects:</h5>
-              <ul class="projects-list mt-2">${projectsHtml}</ul>
-            </div>
           </div>
 
-          <!-- Card Action Buttons -->
-          <div class="match-card-footer mt-6">
-            <button class="primary-btn card-action-btn" data-action="experience" data-career-id="${career.id}">
-              <span>Experience Career Challenge</span>
-              <span class="btn-arrow">⚡</span>
+          <!-- Clean Action Buttons -->
+          <div class="match-card-footer mt-6 flex flex-wrap gap-3">
+            <button class="primary-btn card-action-btn flex-1" data-action="inspect" data-career-id="${career.id}">
+              <span>Inspect Full Career Profile</span>
+              <span class="btn-arrow">🔍</span>
             </button>
 
             <button class="secondary-btn card-action-btn" data-action="roadmap" data-career-id="${career.id}">
               <span>View Personalized Roadmap</span>
               <span class="btn-arrow">🗺️</span>
             </button>
+
+            <button class="tertiary-btn card-action-btn" data-action="experience" data-career-id="${career.id}">
+              <span>Career Challenge</span>
+              <span class="btn-arrow">⚡</span>
+            </button>
           </div>
         </div>
       `;
     }).join("");
+
+    // Modal HTML for detailed career view (Section 10)
+    let detailModalHtml = "";
+    if (activeModalCareerId) {
+      const activeCareer = (window.CAREERS_DATABASE || []).find(c => c.id === activeModalCareerId);
+      if (activeCareer) {
+        const streamNames = (activeCareer.streamCompatibility || []).map(st => {
+          const foundObj = (window.STREAMS || []).find(s => s.id === st);
+          return foundObj ? foundObj.title : st;
+        }).join(", ");
+
+        const degreeChips = (activeCareer.degreePathways || []).map(d => `<span class="pathway-chip">${d}</span>`).join("");
+        const examChips = (activeCareer.entranceExams || []).map(e => `<span class="exam-chip">${e}</span>`).join("");
+        const skillChips = (activeCareer.usefulSkills || []).map(s => `<span class="skill-chip">${s}</span>`).join("");
+        const projectItems = (activeCareer.beginnerActivities || []).map(act => `<li class="project-item"><span class="proj-icon">💡</span> ${act}</li>`).join("");
+
+        // Derived job roles
+        const jobRoles = activeCareer.jobRoles || [
+          `Junior ${activeCareer.name} Specialist`,
+          `Senior ${activeCareer.name} Professional`,
+          `Lead ${activeCareer.name} Consultant / Manager`
+        ];
+        const jobRoleChips = jobRoles.map(j => `<span class="summary-chip extra">${j}</span>`).join("");
+
+        // Derived career progression
+        const progression = activeCareer.progression || [
+          "Entry Level: Associate / Trainee / Junior Specialist (0–2 years)",
+          "Mid Level: Senior Specialist / Project Lead / Consultant (3–6 years)",
+          "Senior Level: Department Head / Director / Industry Expert (7+ years)"
+        ];
+        const progressionList = progression.map(p => `<li><span class="reason-bullet">📈</span> ${p}</li>`).join("");
+
+        detailModalHtml = `
+          <div class="career-modal-backdrop open" id="careerDetailModalOverlay">
+            <div class="glass-panel career-modal-box">
+              <button type="button" class="modal-close-btn" id="closeCareerModalBtn" aria-label="Close modal">✕</button>
+
+              <div class="modal-header mb-4">
+                <span class="category-pill">${activeCareer.category}</span>
+                <h2 class="career-title mt-2">${activeCareer.name}</h2>
+              </div>
+
+              <div class="modal-body flex flex-col gap-5">
+                <!-- 1. Career Overview -->
+                <div class="modal-section">
+                  <h4 class="sub-label">1. Career Overview</h4>
+                  <p class="mt-1 text-muted">${activeCareer.description}</p>
+                  ${activeCareer.whySuited ? `<p class="mt-2 text-sm text-red-glow"><strong>Key Suitability:</strong> ${activeCareer.whySuited}</p>` : ''}
+                </div>
+
+                <!-- 2. What to Study After Class 12 -->
+                <div class="modal-section">
+                  <h4 class="sub-label">2. What to Study After Class 12</h4>
+                  <p class="mt-1 text-sm"><strong>Eligible Class 12 Streams:</strong> ${streamNames}</p>
+                  <h5 class="sub-label mt-2">Key Entrance Exams:</h5>
+                  <div class="chips-flex mt-1">${examChips || '<span class="text-muted">Merit-based / Direct Admission</span>'}</div>
+                </div>
+
+                <!-- 3. Relevant Bachelor's Degree -->
+                <div class="modal-section">
+                  <h4 class="sub-label">3. Relevant Bachelor's Degree Pathways</h4>
+                  <div class="chips-flex mt-2">${degreeChips}</div>
+                </div>
+
+                <!-- 4. Higher-Study Pathway -->
+                <div class="modal-section">
+                  <h4 class="sub-label">4. Higher-Study & Specialization Pathway</h4>
+                  <p class="mt-1 text-sm text-muted">
+                    Postgraduate options: Master's Degree (M.Tech / M.Sc / MS / MBA), Specialist Diplomas, or Professional Certifications.
+                  </p>
+                </div>
+
+                <!-- 5. Skills to Develop -->
+                <div class="modal-section">
+                  <h4 class="sub-label">5. Skills to Develop</h4>
+                  <div class="chips-flex mt-2">${skillChips}</div>
+                </div>
+
+                <!-- 6. Beginner Exploration Activities -->
+                <div class="modal-section">
+                  <h4 class="sub-label">6. Beginner Exploration Activities</h4>
+                  <ul class="projects-list mt-2">${projectItems}</ul>
+                </div>
+
+                <!-- 7. Possible Job Roles -->
+                <div class="modal-section">
+                  <h4 class="sub-label">7. Possible Job Roles</h4>
+                  <div class="chips-flex mt-2">${jobRoleChips}</div>
+                </div>
+
+                <!-- 8. Career Progression -->
+                <div class="modal-section">
+                  <h4 class="sub-label">8. Career Progression</h4>
+                  <ul class="why-appeared-list mt-2">${progressionList}</ul>
+                </div>
+              </div>
+
+              <div class="modal-footer mt-6 flex justify-end">
+                <button type="button" class="secondary-btn" id="closeCareerModalFooterBtn">Close Profile</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
 
     return `
       <div class="results-page-wrapper container section-padding">
@@ -204,10 +264,39 @@
           ${careerCardsHtml}
         </div>
       </div>
+      ${detailModalHtml}
     `;
   }
 
-  function initResultsEvents(onNavigateToChallenge, onNavigateToRoadmap) {
+  function initResultsEvents(onNavigateToChallenge, onNavigateToRoadmap, onRefreshView) {
+    // Inspect Career Detail Modal Trigger
+    document.querySelectorAll('[data-action="inspect"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const careerId = e.currentTarget.getAttribute('data-career-id');
+        activeModalCareerId = careerId;
+        if (onRefreshView) onRefreshView();
+      });
+    });
+
+    // Close Modal Events
+    const closeBtn = document.getElementById('closeCareerModalBtn');
+    const closeFooterBtn = document.getElementById('closeCareerModalFooterBtn');
+    const overlay = document.getElementById('careerDetailModalOverlay');
+
+    const closeModal = () => {
+      activeModalCareerId = null;
+      if (onRefreshView) onRefreshView();
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (closeFooterBtn) closeFooterBtn.addEventListener('click', closeModal);
+    if (overlay) {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+      });
+    }
+
+    // Action Buttons
     document.querySelectorAll('[data-action="experience"]').forEach(btn => {
       btn.addEventListener('click', (e) => {
         const careerId = e.currentTarget.getAttribute('data-career-id');
@@ -228,3 +317,4 @@
     initResultsEvents
   };
 })();
+

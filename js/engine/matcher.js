@@ -39,6 +39,16 @@
                          tagSet.has("public_health_interest") ||
                          ["pcb", "pcmb"].includes(stream);
 
+    // Mathematics signals
+    const hasMathSignal = tagSet.has("pure_maths") ||
+                          tagSet.has("applied_physics") ||
+                          tagSet.has("software_coding_interest") ||
+                          tagSet.has("ai_ml_interest") ||
+                          tagSet.has("data_science_interest") ||
+                          tagSet.has("actuarial_interest") ||
+                          tagSet.has("ca_accounting_interest") ||
+                          ["pcm", "cs_maths", "pcmb"].includes(stream);
+
     // Defense Signals
     const hasArmyInterest = tagSet.has("defence_army_interest");
     const hasNavyInterest = tagSet.has("navy_interest");
@@ -58,7 +68,32 @@
       const signalsFound = [];
 
       // -----------------------------------------------------------------
-      // 1. VERY HIGH: EXPLICIT CAREER INTEREST (+50 PTS BASE SCORE)
+      // 1. HARD CLASS 12 ELIGIBILITY FILTER
+      // -----------------------------------------------------------------
+      let isStreamCompatible = false;
+      if (career.streamCompatibility && (career.streamCompatibility.includes(stream) || career.streamCompatibility.includes("all"))) {
+        isStreamCompatible = true;
+      }
+
+      // Hard eligibility penalties for clear mismatch streams
+      if (!isStreamCompatible) {
+        // Clinical medical careers (Medicine, Dental, Nursing, Physiotherapy, Pathology) REQUIRE Biology
+        if (["medicine", "dentistry", "nursing", "physiotherapy", "allied_health_lab"].includes(career.id) && !hasBioSignal) {
+          score -= 100; // Hard Ineligible
+        }
+        // Heavy engineering requiring Core Class 12 Math (Aerospace, Mechanical, Civil, Pure Math) REQUIRE Math
+        else if (["aerospace", "aeronautical_eng", "mechanical", "civil_structural", "pure_science_maths"].includes(career.id) && !hasMathSignal) {
+          score -= 100; // Hard Ineligible
+        } else {
+          score -= 40; // Academic incompatibility penalty
+        }
+      } else {
+        score += 15;
+        signalsFound.push(`studied **${streamName}** in Class 12`);
+      }
+
+      // -----------------------------------------------------------------
+      // 2. VERY HIGH: EXPLICIT CAREER INTEREST (+50 PTS BASE SCORE)
       // Explicit selection of a career area MUST be the strongest driver!
       // -----------------------------------------------------------------
       let hasExplicitMatch = false;
@@ -128,6 +163,12 @@
       if (career.id === "public_health" && tagSet.has("public_health_interest")) {
         score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Public Health & Epidemiology");
       }
+      if (career.id === "psychology_counselling" && (tagSet.has("psychology_interest") || tagSet.has("counselling_interest"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Psychology & Behavioral Counselling");
+      }
+      if (career.id === "allied_health_lab" && tagSet.has("pathology_lab_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Medical Laboratory Science & Pathology Diagnostics");
+      }
 
       // Defence
       if (career.id === "defence_army" && hasArmyInterest) {
@@ -181,7 +222,7 @@
       if (career.id === "civil_services" && tagSet.has("civils_interest")) {
         score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Civil Services & Public Administration (IAS/IPS)");
       }
-      if (career.id === "public_policy" && tagSet.has("public_policy_interest")) {
+      if (career.id === "public_policy" && tagSet.has("policy_interest")) {
         score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Public Policy & International Relations");
       }
 
@@ -197,20 +238,20 @@
       }
 
       // Creative & Performing Arts
-      if (career.id === "actor_performer" && tagSet.has("acting_performance_interest")) {
-        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Acting & Theatre Performance");
+      if (career.id === "actor_performer" && (tagSet.has("acting_performance_interest") || tagSet.has("acting_interest"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Acting, Theatre & Performance Arts");
       }
-      if (career.id === "film_director" && tagSet.has("film_directing_interest")) {
-        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Film Directing & Screenwriting");
+      if (career.id === "film_director" && (tagSet.has("film_directing_interest") || tagSet.has("filmmaking_interest"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Film Direction & Screenwriting");
       }
-      if (career.id === "cinematographer_camera" && (tagSet.has("cinematography_camera_interest") || tagSet.has("photography_video_interest"))) {
-        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Cinematography, Photography & Camera Operations");
+      if (career.id === "cinematographer_camera" && (tagSet.has("cinematography_camera_interest") || tagSet.has("photography_video_interest") || tagSet.has("camera_interest"))) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Cinematography, Photography & Camera Work");
       }
-      if (career.id === "musician_singer" && tagSet.has("musician_singing_interest")) {
+      if (career.id === "musician_singer" && (tagSet.has("musician_singing_interest") || tagSet.has("music_interest"))) {
         score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Music Performance, Singing & Sound Production");
       }
       if (career.id === "ui_ux_design" && (tagSet.has("design_uiux_interest") || tagSet.has("ui_ux_interest"))) {
-        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected UI/UX & Product Design");
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected UI/UX & Digital Product Design");
       }
       if (career.id === "journalism_media" && tagSet.has("journalism_interest")) {
         score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Journalism & Digital Media");
@@ -243,7 +284,7 @@
         score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Pure Mathematics & Cryptographic Research");
       }
 
-      // Emerging
+      // Emerging & Agriculture
       if (career.id === "healthtech_manager" && tagSet.has("healthtech_interest")) {
         score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected HealthTech & Telemedicine Innovation");
       }
@@ -253,31 +294,13 @@
       if (career.id === "climate_tech" && tagSet.has("climate_tech_interest")) {
         score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Climate Tech & Renewable Energy");
       }
-
-      // -----------------------------------------------------------------
-      // 2. HIGH: ACADEMIC SUBJECT INTERESTS & STREAM COMPATIBILITY (+20 PTS)
-      // -----------------------------------------------------------------
-      if (stream !== "vocational") {
-        if (career.streamCompatibility.includes(stream)) {
-          score += 15;
-          if (!hasExplicitMatch) signalsFound.push(`studied **${streamName}** in Class 12`);
-        } else {
-          // Soft penalty for non-matching stream if no explicit selection
-          if (!hasExplicitMatch) {
-            score -= 20;
-          }
-        }
-      } else {
-        // Vocational stream handling
-        if (career.streamCompatibility.includes("vocational")) {
-          score += 15;
-          if (!hasExplicitMatch) signalsFound.push("selected **Vocational / Applied Skills** stream");
-        } else {
-          score -= 10;
-        }
+      if (career.id === "agri_food_science" && tagSet.has("agri_tech_interest")) {
+        score += 50; hasExplicitMatch = true; signalsFound.push("specifically selected Agricultural Science & Sustainable Food Tech");
       }
 
-      // Subject overlap evaluation (+20 PTS)
+      // -----------------------------------------------------------------
+      // 3. HIGH: SUBJECT OVERLAP EVALUATION (+20 PTS)
+      // -----------------------------------------------------------------
       if (career.relevantSubjects) {
         let subjectMatches = 0;
         career.relevantSubjects.forEach(subj => {
@@ -294,7 +317,7 @@
       }
 
       // -----------------------------------------------------------------
-      // 3. HIGH: RELEVANT PREFERENCES & WORK ENVIRONMENTS (+15 PTS)
+      // 4. HIGH: WORK PREFERENCES & ENVIRONMENT (+15 PTS)
       // -----------------------------------------------------------------
       if (prefSet.has("working_tech") && ["Technology", "Engineering"].includes(career.category)) {
         score += 15;
@@ -312,11 +335,11 @@
         score += 15;
         if (signalsFound.length < 3) signalsFound.push("enjoys working with data, numbers & statistics");
       }
-      if (prefSet.has("research_investigation") && (career.category === "Science & Research" || ["biotechnology", "astrophysics", "bioinformatics", "public_health"].includes(career.id))) {
+      if (prefSet.has("research_investigation") && (career.category === "Science & Research" || ["biotechnology", "astrophysics", "bioinformatics", "public_health", "psychology_counselling"].includes(career.id))) {
         score += 15;
-        if (signalsFound.length < 3) signalsFound.push("prefers deep research & investigation");
+        if (signalsFound.length < 3) signalsFound.push("prefers deep research & scientific investigation");
       }
-      if (prefSet.has("working_people") && (career.category === "Medical & Healthcare" || career.category === "Education" || ["corporate_law", "actor_performer", "civil_services"].includes(career.id))) {
+      if (prefSet.has("working_people") && (career.category === "Medical & Healthcare" || career.category === "Education" || ["corporate_law", "actor_performer", "civil_services", "psychology_counselling"].includes(career.id))) {
         score += 15;
         if (signalsFound.length < 3) signalsFound.push("enjoys working directly with people & communities");
       }
@@ -326,7 +349,7 @@
       }
 
       // -----------------------------------------------------------------
-      // 4. HIGH: NATURAL STRENGTHS (+10 PTS)
+      // 5. HIGH: NATURAL STRENGTHS (+10 PTS)
       // -----------------------------------------------------------------
       if (strengthSet.has("problem_solving") && ["cs_software", "ai_ml", "cybersecurity", "mechanical", "aerospace", "web_app_developer", "cloud_devops"].includes(career.id)) {
         score += 10;
@@ -362,7 +385,7 @@
       }
 
       // -----------------------------------------------------------------
-      // 5. MEDIUM: EXTRACURRICULAR ACTIVITIES (+5 PTS)
+      // 6. MEDIUM: EXTRACURRICULAR ACTIVITIES (+5 PTS)
       // -----------------------------------------------------------------
       if (extraSet.has("coding_clubs") && career.category === "Technology") score += 5;
       if (extraSet.has("robotics") && ["robotics_automation", "mechanical", "avionics"].includes(career.id)) score += 5;
@@ -374,55 +397,37 @@
       if (extraSet.has("teaching_tutoring") && career.category === "Education") score += 5;
 
       // -----------------------------------------------------------------
-      // 6. MISMATCH & AVOIDANCE PENALTIES (-40 to -80 PTS)
-      // Prevents illogical recommendations (e.g. CS getting Bioinformatics,
-      // Vocational getting Army without defence interest, etc.)
+      // 7. MISMATCH & AVOIDANCE PENALTIES (-40 to -80 PTS)
       // -----------------------------------------------------------------
-
-      // CS/Maths student getting Bioinformatics without biology/healthcare interest
       if (career.id === "bioinformatics" && !hasBioSignal && !tagSet.has("bioinfo_interest")) {
         score -= 80;
       }
-
-      // Commercial Pilot without aviation/pilot interest
       if (career.id === "commercial_pilot" && !hasPilotInterest) {
         score -= 80;
       }
-
-      // Defence careers (Army, Navy, Air Force, Defence Tech) without defence interest/NCC
       if (career.category === "Defence" && !hasGeneralDefenceInterest && !extraSet.has("ncc")) {
         score -= 80;
       }
-
-      // Clinical Medicine/Dentistry/Nursing/Physio without biology signal OR with patient care avoidance
       if (["medicine", "nursing", "dentistry", "physiotherapy"].includes(career.id)) {
         if (!hasBioSignal || avoidSet.has("avoid_patient_care")) {
           score -= 80;
         }
       }
-
-      // Teaching without teaching interest / tutoring / explaining strength
       if (career.category === "Education" && !tagSet.has("teaching_interest") && !tagSet.has("maths_teaching_interest") && !tagSet.has("cs_teaching_interest") && !tagSet.has("bio_teaching_interest") && !extraSet.has("teaching_tutoring") && !strengthSet.has("explaining_concepts")) {
         score -= 40;
       }
-
-      // Professional Athlete without sports athlete interest / sports teams
       if (career.id === "professional_athlete" && !tagSet.has("sports_athlete_interest") && !extraSet.has("sports_teams")) {
         score -= 60;
       }
-
-      // Avoid desk / computer penalty for purely tech/desk careers
       if (avoidSet.has("avoid_desk_computer") && (career.category === "Technology" || career.id === "ca_auditing")) {
         score -= 50;
       }
-
-      // Avoid public speaking penalty for acting / law / journalism
       if (avoidSet.has("avoid_public_speaking") && ["actor_performer", "corporate_law", "journalism_media"].includes(career.id)) {
         score -= 60;
       }
 
       // -----------------------------------------------------------------
-      // 7. RATIONALE STATEMENT GENERATION
+      // 8. RATIONALE STATEMENT GENERATION
       // -----------------------------------------------------------------
       if (signalsFound.length > 0) {
         const uniqueSignals = Array.from(new Set(signalsFound));
@@ -432,16 +437,19 @@
         reasons.push(`Appeared based on broad compatibility with your reported academic preferences.`);
       }
 
-      // Score normalization (capped 100%, min 0)
-      const matchScore = Math.max(0, Math.min(100, Math.round(score)));
+      // Score normalization for encouraging display (capped 95%, baseline 60%)
+      let matchScore = 60;
+      if (score > 0) {
+        matchScore = Math.max(60, Math.min(95, 60 + Math.round(score * 0.4)));
+      } else if (score < -50) {
+        matchScore = 35;
+      }
 
-      let matchLabel = "Worth Exploring";
-      if (matchScore >= 75) {
+      let matchLabel = "Good Pathway to Explore";
+      if (matchScore >= 80) {
         matchLabel = "Strong Match to Explore";
-      } else if (matchScore >= 55) {
-        matchLabel = "Good Match to Explore";
-      } else if (matchScore >= 35) {
-        matchLabel = "Worth Exploring";
+      } else if (matchScore >= 60) {
+        matchLabel = "Good Pathway to Explore";
       } else {
         matchLabel = "Another Pathway to Consider";
       }
@@ -456,20 +464,20 @@
     });
 
     // -----------------------------------------------------------------
-    // 8. CONFIDENCE THRESHOLDING & TOP 5 SELECTION
+    // 9. CONFIDENCE THRESHOLDING & TOP 3–5 SELECTION
     // -----------------------------------------------------------------
     scoredCareers.sort((a, b) => b.matchScore - a.matchScore);
 
-    // Pick top 5 relevant careers
+    // Pick top 3 to 5 relevant careers
     let topMatches = scoredCareers.slice(0, 5);
 
     // Guarantee non-empty results fallback
     if (topMatches.length === 0 || topMatches[0].matchScore < 10) {
       topMatches = scoredCareers.slice(0, 5).map(item => ({
         ...item,
-        matchScore: Math.max(item.matchScore, 40),
-        matchPercent: `${Math.max(item.matchScore, 40)}%`,
-        matchLabel: "Worth Exploring"
+        matchScore: Math.max(item.matchScore, 65),
+        matchPercent: `${Math.max(item.matchScore, 65)}%`,
+        matchLabel: "Good Pathway to Explore"
       }));
     }
 

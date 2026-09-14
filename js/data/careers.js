@@ -881,9 +881,64 @@ window.CAREERS_DATABASE = [
     entranceExams: ["IPMAT", "CUET", "NPAT"],
     beginnerActivities: ["Run a small social media ad campaign", "Analyze website analytics & SEO metrics"],
     relatedCareers: ["content_creation", "product_mgmt", "fintech_entrepreneurship"]
+  },
+
+  // --- PSYCHOLOGY & SOCIAL SCIENCE ---
+  {
+    id: "psychology_counselling",
+    name: "Psychology & Behavioral Counselling",
+    category: "Psychology & Social Science",
+    streamCompatibility: ["arts", "pcb", "commerce", "pcmb", "pcm", "cs_maths"],
+    description: "Understanding human mind, mental health counselling, cognitive behavior therapy, organizational psychology, and social research.",
+    whySuited: "High empathy, deep listening skills, interest in human behavior, mental wellness, and psychological research.",
+    relevantSubjects: ["Psychology", "Sociology", "Biology", "English"],
+    usefulSkills: ["Empathy & Counselling", "Active Listening", "Behavioral Observation", "Research Methods"],
+    degreePathways: ["BA / B.Sc Psychology (3-4 Years) -> MA / M.Sc Clinical Psychology"],
+    entranceExams: ["CUET-UG", "University Entrance Tests"],
+    beginnerActivities: ["Read introductory psychology literature on cognitive biases", "Practice active empathetic listening techniques"],
+    jobRoles: ["Clinical Psychologist", "School / Educational Counsellor", "Corporate HR Specialist", "Behavioral Researcher"],
+    progressionPath: ["Junior Assistant Counsellor -> Licensed Clinical Psychologist -> Senior Consultant / Clinic Director"],
+    relatedCareers: ["public_health", "civil_services", "edtech_designer"]
+  },
+
+  // --- ALLIED HEALTHCARE ---
+  {
+    id: "allied_health_lab",
+    name: "Medical Laboratory Science & Allied Diagnostics",
+    category: "Medical & Healthcare",
+    streamCompatibility: ["pcb", "pcmb"],
+    description: "Operating medical laboratory instrumentation, analyzing patient blood and tissue samples, clinical pathology, and diagnostic imaging support.",
+    whySuited: "Precision lab mindset, interest in diagnostic medical technology, pathology, and healthcare support.",
+    relevantSubjects: ["Biology", "Chemistry", "Pathology", "Biochemistry"],
+    usefulSkills: ["Lab Sample Analysis", "Diagnostic Instrumentation", "Precision & Safety", "Pathology Reporting"],
+    degreePathways: ["B.Sc Medical Laboratory Technology (BMLT)", "B.Sc Radiology & Imaging"],
+    entranceExams: ["NEET-UG", "State Allied Health CETs", "CUET"],
+    beginnerActivities: ["Learn microscopic slide preparation basics", "Study clinical blood panel reference ranges"],
+    jobRoles: ["Medical Lab Technologist", "Pathology Specialist", "Diagnostic Imaging Technologist", "Lab Operations Manager"],
+    progressionPath: ["Junior Lab Analyst -> Senior Technologist -> Laboratory Director / Quality Manager"],
+    relatedCareers: ["medicine", "pharmacy", "biotechnology"]
+  },
+
+  // --- ENVIRONMENT & AGRICULTURE ---
+  {
+    id: "agri_food_science",
+    name: "Agricultural Science & Sustainable Food Tech",
+    category: "Emerging",
+    streamCompatibility: ["pcb", "pcm", "pcmb", "commerce"],
+    description: "Applying modern science to crop yield enhancement, agritech automation, sustainable farming systems, soil chemistry, and food technology.",
+    whySuited: "Interest in sustainable agriculture, plant science, environmental impact, food security, and agritech innovation.",
+    relevantSubjects: ["Biology", "Chemistry", "Agricultural Science", "Economics"],
+    usefulSkills: ["Soil Testing", "Agritech Systems", "Crop Science", "Food Safety Standards"],
+    degreePathways: ["B.Sc (Hons) Agriculture", "B.Tech Agricultural Engineering / Food Tech"],
+    entranceExams: ["ICAR AIEEA", "CUET-UG", "State Agri CETs"],
+    beginnerActivities: ["Study hydroponics and soil chemistry kits", "Explore modern precision agriculture drone technologies"],
+    jobRoles: ["Agricultural Scientist", "Agritech Entrepreneur", "Food Safety Auditor", "Soil Specialist"],
+    progressionPath: ["Agri Field Officer -> Research Scientist -> Agritech Product Leader"],
+    relatedCareers: ["biotechnology", "climate_tech", "environmental_eng"]
   }
 ];
 
 window.getCareerById = function(id) {
   return window.CAREERS_DATABASE.find(c => c.id === id);
 };
+

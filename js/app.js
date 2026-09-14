@@ -41,8 +41,44 @@
       }
     });
 
-    // 4. Render initial view
-    renderApp();
+    // 4. Show Welcome Screen on initial load then transition to Dashboard
+    if (!sessionStorage.getItem('cq_welcome_shown')) {
+      showWelcomeAnimation(() => {
+        appState.currentView = "dashboard";
+        renderApp();
+      });
+    } else {
+      renderApp();
+    }
+  }
+
+  function showWelcomeAnimation(onComplete) {
+    sessionStorage.setItem('cq_welcome_shown', 'true');
+    const mainContainer = document.getElementById('mainAppContainer');
+    if (!mainContainer) { onComplete(); return; }
+
+    mainContainer.innerHTML = `
+      <div class="assessment-container container section-padding flex justify-center items-center" style="min-height: 70vh;">
+        <div class="glass-panel text-center p-8 max-w-lg mx-auto welcome-anim-card" id="welcomeAnimCard">
+          <div class="badge-pill mb-4"><span class="pulse-dot"></span> CAREERQUEST AI</div>
+          <h1 class="welcome-heading text-3xl font-bold mt-2" style="font-size: 2.1rem; background: linear-gradient(135deg, #FFFFFF 0%, #FF4D4D 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Hello! Welcome to CareerQuest AI</h1>
+          <p class="text-muted mt-3" style="font-size: 1.05rem;">Your Intelligent Career Exploration Platform for Class 12</p>
+          <div class="mt-6 flex justify-center items-center gap-2 text-red-glow font-semibold" style="font-size: 0.95rem;">
+            <span class="pulse-spark">✨</span> Preparing Dashboard...
+          </div>
+        </div>
+      </div>
+    `;
+
+    setTimeout(() => {
+      const card = document.getElementById('welcomeAnimCard');
+      if (card) {
+        card.style.transition = "opacity 0.4s ease, transform 0.4s ease";
+        card.style.opacity = "0";
+        card.style.transform = "scale(0.95)";
+      }
+      setTimeout(onComplete, 400);
+    }, 1400);
   }
 
   function navigateTo(viewName) {
@@ -230,7 +266,8 @@
                 window.CQ_ROADMAP.setSelectId(careerId);
               }
               navigateTo("roadmap");
-            }
+            },
+            () => renderApp()
           );
         }
         break;

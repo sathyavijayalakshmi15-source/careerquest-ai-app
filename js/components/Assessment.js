@@ -59,7 +59,7 @@
     // -------------------------------------------------------------
     if (currentQType === "stream") {
       stepTitle = "What stream did you study in Class 12?";
-      stepSubtitle = "Select your academic stream to personalize the assessment.";
+      stepSubtitle = "Choose the one that fits you best.";
 
       const streamOptionsHtml = (window.STREAMS || []).map((s, idx) => {
         const isSelected = stream === s.id;
@@ -91,7 +91,7 @@
     // -------------------------------------------------------------
     else if (currentQType === "stream_q" && currentStreamQ) {
       stepTitle = currentStreamQ.question;
-      stepSubtitle = currentStreamQ.subtitle || "Select all options that excite you.";
+      stepSubtitle = "Select all that interest you.";
 
       const optionsHtml = currentStreamQ.options.map((opt, idx) => {
         const isSelected = (streamAnswers || []).includes(opt.id);
@@ -121,7 +121,7 @@
     // -------------------------------------------------------------
     else if (currentQType === "extras") {
       stepTitle = "What activities do you enjoy?";
-      stepSubtitle = "Select hobbies or student activities (supporting signals).";
+      stepSubtitle = "Select all that interest you.";
 
       const optionsHtml = (window.EXTRACURRICULAR_OPTIONS || []).map((item, idx) => {
         const isSelected = (extracurriculars || []).includes(item.id);
@@ -150,7 +150,7 @@
     // -------------------------------------------------------------
     else if (currentQType === "strengths") {
       stepTitle = "What are your top strengths?";
-      stepSubtitle = "Select qualities that describe how you solve problems.";
+      stepSubtitle = "Select all that interest you.";
 
       const optionsHtml = (window.STRENGTHS_OPTIONS || []).map((item, idx) => {
         const isSelected = (strengths || []).includes(item.id);
@@ -179,7 +179,7 @@
     // -------------------------------------------------------------
     else if (currentQType === "prefs") {
       stepTitle = "What work style appeals to you?";
-      stepSubtitle = "Select your ideal future work environment and purpose.";
+      stepSubtitle = "Select all that interest you.";
 
       const optionsHtml = (window.PREFERENCES_OPTIONS || []).map((item, idx) => {
         const isSelected = (preferences || []).includes(item.id);
@@ -210,7 +210,7 @@
     // -------------------------------------------------------------
     else if (currentQType === "avoidances") {
       stepTitle = "What would you rather avoid?";
-      stepSubtitle = "Select tasks or environments you do NOT enjoy (important negative signals).";
+      stepSubtitle = "Select all that interest you.";
 
       const optionsHtml = (window.AVOIDANCE_OPTIONS || []).map((item, idx) => {
         const isSelected = (avoidances || []).includes(item.id);
