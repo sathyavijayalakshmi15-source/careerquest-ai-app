@@ -1,247 +1,154 @@
 import json
 import re
 
-with open('js/data/careers.js', 'r', encoding='utf-8') as f:
-    careers_js = f.read()
+careers_js = open('js/data/careers.js', encoding='utf-8').read()
+matcher_js = open('js/engine/matcher.js', encoding='utf-8').read()
 
-pattern = r'{\s*id:\s*"([^"]+)",\s*name:\s*"([^"]+)",\s*category:\s*"([^"]+)",\s*streamCompatibility:\s*\[([^\]]+)\]'
-matches = re.findall(pattern, careers_js)
+arr_match = re.search(r'window\.CAREERS_DATABASE\s*=\s*(\[.*?\]);', careers_js, flags=re.DOTALL)
+clean_careers = arr_match.group(1)
+clean_careers = re.sub(r'//.*', '', clean_careers)
+clean_careers = re.sub(r'/\*.*?\*/', '', clean_careers, flags=re.DOTALL)
 
-careers = []
-for m in matches:
-    c_id, name, cat, streams_raw = m
-    streams = [s.strip().replace('"', '') for s in streams_raw.split(',')]
-    careers.append({
-        'id': c_id,
-        'name': name,
-        'category': cat,
-        'streamCompatibility': streams
-    })
+def js_to_json(js_str):
+    js_str = re.sub(r'([{,]\s*)([a-zA-Z0-9_]+)\s*:', r'\1"\2":', js_str)
+    js_str = re.sub(r',\s*([}\]])', r'\1', js_str)
+    return js_str
 
-def match_careers(assessment_data):
-    stream = assessment_data.get('stream', '')
-    stream_answers = set(assessment_data.get('streamAnswers', []))
-    extracurriculars = set(assessment_data.get('extracurriculars', []))
-    strengths = set(assessment_data.get('strengths', []))
-    preferences = set(assessment_data.get('preferences', []))
-    avoidances = set(assessment_data.get('avoidances', []))
+careers_data = json.loads(js_to_json(clean_careers))
 
-    # Biological science signals
-    has_bio_signal = "genetics_dna" in stream_answers or "human_anatomy" in stream_answers or "microbiology" in stream_answers or "biotech_genetics" in stream_answers or "clinical_medicine" in stream_answers or stream in ["pcb", "pcmb"]
+def match_careers(stream, streamAnswers=None, extracurriculars=None, strengths=None, preferences=None, avoidances=None):
+    if streamAnswers is None: streamAnswers = []
+    if extracurriculars is None: extracurriculars = []
+    if strengths is None: strengths = []
+    if preferences is None: preferences = []
+    if avoidances is None: avoidances = []
 
-    # Specific interest signals
-    has_pilot = "pilot_interest" in stream_answers or "aviation_pilot_pref" in preferences
-    has_army = "defence_army_interest" in stream_answers or ("defence_service_pref" in preferences and "ncc" in extracurriculars)
-    has_navy = "navy_interest" in stream_answers
-    has_airforce = "airforce_interest" in stream_answers or ("defence_service_pref" in preferences and ("aerospace_interest" in stream_answers or "aeronautical_interest" in stream_answers))
-    has_def_tech = "defence_tech_interest" in stream_answers or ("defence_service_pref" in preferences and "electronics" in stream_answers)
-    has_gen_def = "defence_service_pref" in preferences or has_army or has_navy or has_airforce or has_def_tech
+    tagSet = set(streamAnswers)
+    extraSet = set(extracurriculars)
+    strengthSet = set(strengths)
+    prefSet = set(preferences)
+    avoidSet = set(avoidances)
 
-    has_software = "software_coding_interest" in stream_answers or "coding_clubs" in extracurriculars or "working_tech" in preferences
-    has_mech = "mechanical_machinery_interest" in stream_answers or "working_machines" in preferences or "robotics" in extracurriculars
-    has_ca = "ca_accounting_interest" in stream_answers
-    has_finance = "finance_stock_interest" in stream_answers
-    has_medicine = "medicine_interest" in stream_answers or "clinical_medicine" in stream_answers
-    has_biotech = "biotech_interest" in stream_answers or "biotech_genetics" in stream_answers
-    has_pharmacy = "pharmacy_interest" in stream_answers or "pharmacy" in stream_answers
-    has_physio = "physio_interest" in stream_answers or "physiotherapy" in stream_answers
-    has_teaching = "teaching_interest" in stream_answers or "teaching_explaining" in preferences or "teaching_tutoring" in extracurriculars or "peer_mentoring" in extracurriculars
-    has_law = "law_interest" in stream_answers or "corporate_law_interest" in stream_answers
-    has_civils = "civils_interest" in stream_answers
+    hasBioSignal = ("genetics_dna" in tagSet or "human_anatomy" in tagSet or "microbiology" in tagSet or 
+                    "biotech_genetics" in tagSet or "clinical_medicine" in tagSet or "medicine_interest" in tagSet or 
+                    "biotech_interest" in tagSet or "bioinfo_interest" in tagSet or "nursing_interest" in tagSet or 
+                    "dentistry_interest" in tagSet or "physio_interest" in tagSet or "public_health_interest" in tagSet or 
+                    stream in ["pcb", "pcmb"])
+
+    hasMathSignal = ("pure_maths" in tagSet or "applied_physics" in tagSet or "software_coding_interest" in tagSet or 
+                     "ai_ml_interest" in tagSet or "data_science_interest" in tagSet or "actuarial_interest" in tagSet or 
+                     "ca_accounting_interest" in tagSet or stream in ["pcm", "cs_maths", "pcmb"])
+
+    hasArmyInterest = "defence_army_interest" in tagSet
+    hasNavyInterest = "navy_interest" in tagSet
+    hasAirForceInterest = "airforce_interest" in tagSet
+    hasDefenceTechInterest = "defence_tech_interest" in tagSet
+    hasGeneralDefenceInterest = ("defence_service_pref" in prefSet or "ncc" in extraSet or 
+                                 hasArmyInterest or hasNavyInterest or hasAirForceInterest or hasDefenceTechInterest)
+
+    hasPilotInterest = "pilot_interest" in tagSet or "aviation_pilot_pref" in prefSet
+    hasAircraftMaintInterest = "aircraft_maint_interest" in tagSet
+    hasAvionicsInterest = "avionics_interest" in tagSet
+    hasGeneralAviationInterest = (hasPilotInterest or hasAircraftMaintInterest or hasAvionicsInterest or "aviation_pilot_pref" in prefSet)
 
     scored = []
-    for c in careers:
+    for career in careers_data:
+        cid = career['id']
+        cat = career.get('category', '')
+        streamComp = career.get('streamCompatibility', [])
+
         score = 0
-        c_id = c['id']
-        cat = c['category']
-        compat = c['streamCompatibility']
+        isStreamComp = (stream in streamComp) or ("all" in streamComp)
 
-        # 1. Explicit Interest (+45)
-        if c_id == "commercial_pilot" and has_pilot: score += 45
-        if c_id == "defence_army" and (has_army or (has_gen_def and "leadership" in strengths)): score += 45
-        if c_id == "defence_navy" and (has_navy or (has_gen_def and ("working_outdoors" in preferences or "teamwork" in strengths))): score += 45
-        if c_id == "defence_airforce" and (has_airforce or (has_gen_def and ("aerospace_interest" in stream_answers or "aeronautical_interest" in stream_answers))): score += 45
-        if c_id == "defence_tech" and has_def_tech: score += 45
-
-        if c_id in ["cs_software", "ai_ml", "data_science", "cybersecurity"] and has_software: score += 40
-        if c_id in ["applied_mechanics_tech", "mechanical", "robotics_automation"] and has_mech: score += 40
-        if c_id in ["ca_auditing", "financial_analyst", "actuarial_science"] and (has_ca or has_finance): score += 40
-        if c_id in ["medicine", "biotechnology", "pharmacy", "physiotherapy"] and (has_medicine or has_biotech or has_pharmacy or has_physio): score += 40
-        if cat == "Education" and has_teaching and (has_software or "pure_maths" in stream_answers or has_bio_signal or "communication" in strengths or "explaining_concepts" in strengths): score += 40
-        if c_id in ["corporate_law", "civil_services", "public_policy"] and (has_law or has_civils): score += 40
-
-        # 2. Stream Filter (+15 pts for compatibility, NOT main reason)
-        if stream != "vocational":
-            if stream in compat: score += 15
-            else: score -= 25
+        if not isStreamComp:
+            if cid in ["medicine", "dentistry", "nursing", "physiotherapy", "allied_health_lab"] and not hasBioSignal:
+                score -= 100
+            elif cid in ["aerospace", "aeronautical_eng", "mechanical", "civil_structural", "pure_science_maths"] and not hasMathSignal:
+                score -= 100
+            else:
+                score -= 40
         else:
-            if c_id in ["applied_mechanics_tech", "vocational_tech_it", "vocational_biz_mgmt", "applied_design_media"]: score += 20
-            elif "vocational" in compat: score += 10
-            else: score -= 15
+            score += 15
 
-        # 3. Strengths (+12)
-        if "problem_solving" in strengths and c_id in ["cs_software", "ai_ml", "cybersecurity", "mechanical", "applied_mechanics_tech"]: score += 12
-        if "analytical_thinking" in strengths and c_id in ["data_science", "financial_analyst", "ca_auditing", "astrophysics"]: score += 12
-        if "spatial_thinking" in strengths and c_id in ["aerospace", "aeronautical_eng", "commercial_pilot", "architecture"]: score += 12
-        if "attention_detail" in strengths and c_id in ["ca_auditing", "cybersecurity", "aircraft_maintenance"]: score += 10
-        if ("leadership" in strengths or "discipline" in strengths) and c_id in ["defence_army", "defence_navy", "defence_airforce", "civil_services"]: score += 12
-        if ("explaining_concepts" in strengths or "patience" in strengths) and cat == "Education": score += 12
+        # Explicit interest matches (+50)
+        if cid == "cybersecurity" and ("cybersecurity_interest" in tagSet or "ethical_hacking" in tagSet): score += 50
+        if cid == "ai_ml" and ("ai_ml_interest" in tagSet or "ai_python" in tagSet): score += 50
+        if cid == "cs_software" and ("software_coding_interest" in tagSet or "software_coding" in tagSet): score += 50
+        if cid == "data_science" and ("data_science_interest" in tagSet or "data_analysis" in tagSet): score += 50
+        if cid == "medicine" and ("medicine_interest" in tagSet or "clinical_medicine" in tagSet): score += 50
+        if cid == "ca_auditing" and "ca_accounting_interest" in tagSet: score += 50
+        if cid == "corporate_law" and ("corporate_law_interest" in tagSet or "law_interest" in tagSet): score += 50
+        if cid == "actor_performer" and ("acting_performance_interest" in tagSet or "acting_interest" in tagSet): score += 50
+        if cid == "cinematographer_camera" and ("cinematography_camera_interest" in tagSet or "photography_video_interest" in tagSet or "camera_interest" in tagSet): score += 50
+        if cid == "musician_singer" and ("musician_singing_interest" in tagSet or "music_interest" in tagSet): score += 50
+        if cid == "ui_ux_design" and ("design_uiux_interest" in tagSet or "ui_ux_interest" in tagSet): score += 50
+        if cid == "film_director" and ("film_directing_interest" in tagSet or "filmmaking_interest" in tagSet): score += 50
 
-        # 4. Preferences (+15)
-        if "working_tech" in preferences and cat == "Technology": score += 15
-        if "working_machines" in preferences and c_id in ["applied_mechanics_tech", "mechanical", "aircraft_maintenance"]: score += 15
-        if "working_data" in preferences and c_id in ["data_science", "financial_analyst", "ca_auditing"]: score += 15
-        if "research_investigation" in preferences and cat == "Science & Research": score += 15
-        if "working_people" in preferences and (cat == "Medical & Healthcare" or c_id in ["physiotherapy", "medicine", "corporate_law"]): score += 15
+        # Preferences & Strengths
+        if "creativity_art" in prefSet and cat in ["Creative & Media", "Education"]: score += 15
+        if "creativity" in strengthSet and (cat == "Creative & Media" or cid in ["ui_ux_design", "content_creation", "actor_performer", "film_director", "cinematographer_camera", "musician_singer"]): score += 10
+        if "problem_solving" in strengthSet and cid in ["cs_software", "ai_ml", "cybersecurity"]: score += 10
+        if "analytical_thinking" in strengthSet and cid in ["data_science", "financial_analyst"]: score += 10
 
-        # 5. Extracurriculars (+8)
-        if "ncc" in extracurriculars and c_id in ["defence_army", "defence_navy", "defence_airforce", "civil_services"]: score += 8
-        if "coding_clubs" in extracurriculars and cat == "Technology": score += 8
+        # Extracurriculars
+        if "art_drawing" in extraSet and cid in ["ui_ux_design", "applied_design_media"]: score += 5
+        if "dance" in extraSet and cid == "actor_performer": score += 5
+        if "music" in extraSet and cid == "musician_singer": score += 5
+        if "ncc" in extraSet and cat == "Defence": score += 5
 
-        # 6. HARD MISMATCH & AVOIDANCE PENALTIES (-80 to -100)
-        # Bug 1 Fix: Bioinformatics requires biological science signal!
-        if c_id == "bioinformatics" and not has_bio_signal and "bioinfo_interest" not in stream_answers:
-            score -= 80
+        # Penalties
+        if cid == "bioinformatics" and not hasBioSignal and "bioinfo_interest" not in tagSet: score -= 80
+        if cid == "commercial_pilot" and not hasPilotInterest: score -= 80
+        if cat == "Defence" and not hasGeneralDefenceInterest: score -= 80
 
-        if c_id == "commercial_pilot" and not has_pilot: score -= 80
-        if c_id == "defence_army" and not has_army and not has_gen_def: score -= 80
-        if c_id == "defence_navy" and not has_navy and not (has_gen_def and "working_outdoors" in preferences): score -= 80
-        if c_id == "defence_airforce" and not has_airforce and not (has_gen_def and ("aerospace_interest" in stream_answers or "aeronautical_interest" in stream_answers)): score -= 80
-        if c_id == "defence_tech" and not has_def_tech and not has_gen_def: score -= 80
-        if c_id == "medicine" and (stream not in ["pcb", "pcmb"] or "avoid_patient_care" in avoidances): score -= 100
-        if c_id in ["nursing", "dentistry", "physiotherapy"] and "avoid_patient_care" in avoidances: score -= 100
-        if cat == "Education" and not has_teaching and "explaining_concepts" not in strengths and "teaching_tutoring" not in extracurriculars: score -= 50
+        matchScore = 60
+        if score > 0:
+            matchScore = max(60, min(95, 60 + round(score * 0.4)))
+        elif score < -50:
+            matchScore = 35
 
-        # Avoidances penalties
-        if "avoid_patient_care" in avoidances and cat == "Medical & Healthcare" and c_id != "biotechnology":
-            score -= 100
-        if "avoid_desk_computer" in avoidances and cat == "Technology":
-            score -= 60
+        scored.append((cid, career['name'], matchScore))
 
-        final_score = max(0, min(100, score))
-        scored.append({'id': c_id, 'name': c['name'], 'score': final_score})
+    scored.sort(key=lambda x: x[2], reverse=True)
+    return scored[:5]
 
-    scored.sort(key=lambda x: x['score'], reverse=True)
-    top = [s for s in scored if s['score'] >= 30][:6]
-    if len(top) < 3:
-        top = scored[:5]
-    return top
+# TEST SCENARIOS
+print("\n1. PCM + Programming + Logic:")
+sc1 = match_careers("pcm", streamAnswers=["software_coding_interest"], strengths=["problem_solving"])
+for r in sc1: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
 
-print("=== SCENARIO TESTING REPORT ===")
+print("\n2. PCM + Creativity + Art + Dance/Music + Acting Interest:")
+sc2 = match_careers("pcm", streamAnswers=["acting_interest"], extracurriculars=["art_drawing", "dance", "music"], strengths=["creativity"], preferences=["creativity_art"])
+for r in sc2: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
 
-# Scenario A: CS + Maths + Programming + Tech + Logic
-resA = match_careers({
-    'stream': 'cs_maths',
-    'streamAnswers': ['software_coding_interest', 'ai_ml_interest'],
-    'extracurriculars': ['coding_clubs'],
-    'strengths': ['problem_solving'],
-    'preferences': ['working_tech']
-})
-print("\nScenario A (CS + Maths + Programming + Tech + Logic):")
-for r in resA: print(f"  {r['score']}% - {r['name']} ({r['id']})")
-has_bioinfo_A = any(r['id'] in ['bioinformatics', 'medicine'] for r in resA)
-print(f"Scenario A contains Bioinformatics/Medicine: {has_bioinfo_A} -> {'FAIL' if has_bioinfo_A else 'PASS SUCCESS'}")
+print("\n3. CS + Cybersecurity Interest:")
+sc3 = match_careers("cs_maths", streamAnswers=["cybersecurity_interest"])
+for r in sc3: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
 
-# Scenario B: CS + Maths + Biology + Programming + Research
-resB = match_careers({
-    'stream': 'pcmb',
-    'streamAnswers': ['bioinfo_interest', 'genetics_dna'],
-    'extracurriculars': ['coding_clubs', 'science_exhibitions'],
-    'strengths': ['analytical_thinking'],
-    'preferences': ['research_investigation', 'working_tech']
-})
-print("\nScenario B (CS/PCMB + Bio + Tech + Research):")
-for r in resB: print(f"  {r['score']}% - {r['name']} ({r['id']})")
+print("\n4. PCB + Biology + Healthcare:")
+sc4 = match_careers("pcb", streamAnswers=["medicine_interest", "clinical_medicine"])
+for r in sc4: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
 
-# Scenario C: PCB + Biology + Healthcare + Patient Care
-resC = match_careers({
-    'stream': 'pcb',
-    'streamAnswers': ['clinical_medicine', 'medicine_interest'],
-    'extracurriculars': ['volunteering'],
-    'strengths': ['empathy', 'problem_solving'],
-    'preferences': ['working_people', 'helping_others']
-})
-print("\nScenario C (PCB + Medical + Patient Care):")
-for r in resC: print(f"  {r['score']}% - {r['name']} ({r['id']})")
+print("\n5. Commerce + Accounting + Finance:")
+sc5 = match_careers("commerce", streamAnswers=["ca_accounting_interest", "finance_stock_interest"])
+for r in sc5: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
 
-# Scenario D: Commerce + Accounting + Numbers + Detail
-resD = match_careers({
-    'stream': 'commerce',
-    'streamAnswers': ['ca_accounting_interest'],
-    'extracurriculars': ['competitions'],
-    'strengths': ['attention_detail', 'numerical_ability'],
-    'preferences': ['working_data']
-})
-print("\nScenario D (Commerce + CA/Finance):")
-for r in resD: print(f"  {r['score']}% - {r['name']} ({r['id']})")
+print("\n6. NCC + Leadership + Defence Interest:")
+sc6 = match_careers("pcm", streamAnswers=["defence_army_interest"], extracurriculars=["ncc"], strengths=["leadership", "discipline"])
+for r in sc6: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
 
-# Scenario E: Humanities + Writing + Communication + Social Issues
-resE = match_careers({
-    'stream': 'arts',
-    'streamAnswers': ['law_interest', 'journalism_interest'],
-    'extracurriculars': ['writing'],
-    'strengths': ['communication', 'critical_thinking'],
-    'preferences': ['working_people']
-})
-print("\nScenario E (Humanities + Law/Journalism):")
-for r in resE: print(f"  {r['score']}% - {r['name']} ({r['id']})")
+print("\n7. SINGLE SIGNAL TEST: NCC ALONE (NO Defence Interest):")
+sc7 = match_careers("pcm", streamAnswers=["software_coding_interest"], extracurriculars=["ncc"], strengths=["problem_solving"])
+for r in sc7: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
 
-# Scenario F: Vocational + Practical + Machines + Building + Hands-on
-resF = match_careers({
-    'stream': 'vocational',
-    'streamAnswers': ['mechanical_machinery_interest'],
-    'extracurriculars': ['projects'],
-    'strengths': ['problem_solving'],
-    'preferences': ['working_machines']
-})
-print("\nScenario F (Vocational + Machinery):")
-for r in resF: print(f"  {r['score']}% - {r['name']} ({r['id']})")
-has_def_F = any(r['id'] in ['defence_army', 'defence_navy', 'defence_airforce', 'commercial_pilot'] for r in resF)
-print(f"Scenario F contains Defence/Pilot: {has_def_F} -> {'FAIL' if has_def_F else 'PASS SUCCESS'}")
+print("\n8. SINGLE SIGNAL TEST: Sports Alone (NO Athlete Interest):")
+sc8 = match_careers("pcm", streamAnswers=["software_coding_interest"], extracurriculars=["sports"], strengths=["teamwork"])
+for r in sc8: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
 
-# Scenario G: Any stream + Defence interest + Leadership + Discipline + Teamwork
-resG = match_careers({
-    'stream': 'pcm',
-    'streamAnswers': ['defence_tech_interest'],
-    'extracurriculars': ['ncc', 'leadership'],
-    'strengths': ['leadership', 'discipline', 'teamwork'],
-    'preferences': ['defence_service_pref']
-})
-print("\nScenario G (PCM + NCC + Defence Interest):")
-for r in resG: print(f"  {r['score']}% - {r['name']} ({r['id']})")
+print("\n9. SINGLE SIGNAL TEST: Music Alone (NO Musician Interest):")
+sc9 = match_careers("pcm", streamAnswers=["software_coding_interest"], extracurriculars=["music"], strengths=["creativity"])
+for r in sc9: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
 
-# Scenario H: Any stream + Aviation/Pilot interest + Spatial/Decision-making
-resH = match_careers({
-    'stream': 'pcm',
-    'streamAnswers': ['pilot_interest'],
-    'extracurriculars': ['projects'],
-    'strengths': ['spatial_thinking', 'decision_making'],
-    'preferences': ['aviation_pilot_pref']
-})
-print("\nScenario H (PCM + Aviation/Pilot Interest):")
-for r in resH: print(f"  {r['score']}% - {r['name']} ({r['id']})")
-
-# Scenario I: Few selected interests (e.g. only stream Commerce selected)
-resI = match_careers({
-    'stream': 'commerce',
-    'streamAnswers': [],
-    'extracurriculars': [],
-    'strengths': [],
-    'preferences': []
-})
-print("\nScenario I (Limited signals - Commerce stream only):")
-for r in resI: print(f"  {r['score']}% - {r['name']} ({r['id']})")
-
-# Scenario J: Dislikes patient-facing work
-resJ = match_careers({
-    'stream': 'pcb',
-    'streamAnswers': ['biotech_interest', 'genetics_dna'],
-    'extracurriculars': ['science_exhibitions'],
-    'strengths': ['analytical_thinking'],
-    'preferences': ['research_investigation'],
-    'avoidances': ['avoid_patient_care']
-})
-print("\nScenario J (PCB + Dislikes Patient-Facing Work):")
-for r in resJ: print(f"  {r['score']}% - {r['name']} ({r['id']})")
-has_med_J = any(r['id'] in ['medicine', 'nursing', 'dentistry'] for r in resJ)
-print(f"Scenario J contains Patient Care (Medicine/Nursing): {has_med_J} -> {'FAIL' if has_med_J else 'PASS SUCCESS'}")
+print("\n10. SINGLE SIGNAL TEST: Helping Others Alone (NO Teaching/Medical Interest):")
+sc10 = match_careers("pcm", streamAnswers=["software_coding_interest"], preferences=["helping_others"])
+for r in sc10: print(f"   #{r[0]}: {r[1]} ({r[2]}%)")
