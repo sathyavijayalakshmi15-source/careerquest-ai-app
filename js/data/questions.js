@@ -162,13 +162,17 @@ window.STREAM_QUESTIONS = {
       type: "multi",
       options: [
         { id: "software_code", label: "Software & App Development", tag: "software_coding_interest" },
+        { id: "bsc_computing_degree", label: "B.Sc Computer Science, AI & Data Science", tag: "bsc_cs_interest" },
+        { id: "pure_physics_res", label: "Pure Physics & Quantum Material Research", tag: "pure_physics_interest" },
+        { id: "pure_chem_res", label: "Pure Chemistry & Chemical Research", tag: "pure_chemistry_interest" },
+        { id: "pure_maths_res", label: "Pure Mathematics & Quantitative Analytics", tag: "pure_maths_interest" },
         { id: "mechanical_machinery", label: "Machinery, Engines & Robotics", tag: "mechanical_machinery_interest" },
         { id: "civil_construction", label: "Civil Construction & Smart Cities", tag: "civil_struct_interest" },
         { id: "aerospace_space", label: "Rockets & Space Technology", tag: "aerospace_interest" },
         { id: "aeronautical_aircraft", label: "Aircraft & Aeronautical Design", tag: "aeronautical_interest" },
         { id: "commercial_pilot_spec", label: "Commercial Aviation Pilot", tag: "pilot_interest" },
         { id: "defence_tech_iaf", label: "Defence Electronics & IAF Tech", tag: "defence_tech_interest" },
-        { id: "teaching_pcm", label: "Teaching STEM or Pure Research", tag: "teaching_interest" }
+        { id: "teaching_pcm", label: "Teaching STEM or Academic Lecturing", tag: "teaching_interest" }
       ]
     }
   ],
@@ -190,14 +194,22 @@ window.STREAM_QUESTIONS = {
     },
     {
       id: "pcb_career_direction",
-      question: "Which healthcare direction interests you?",
-      subtitle: "Select life science pathways.",
+      question: "Which healthcare or life science direction interests you?",
+      subtitle: "Select healthcare, medicine, allied health and research pathways.",
       type: "multi",
       options: [
-        { id: "doctor_mbbs", label: "Medical Doctor (MBBS) & Surgery", tag: "medicine_interest" },
+        { id: "doctor_mbbs", label: "Medical Doctor (MBBS) & Clinical Surgery", tag: "medicine_interest" },
+        { id: "med_super_neuro", label: "Neurology Specialisation (DM Neurology / Neurosurgery)", tag: "neurology_interest" },
+        { id: "med_super_cardio", label: "Cardiology Specialisation (DM Cardiology)", tag: "cardiology_interest" },
+        { id: "med_super_psych", label: "Psychiatry Specialisation (MD Psychiatry)", tag: "psychiatry_specialist_interest" },
+        { id: "allied_cardiac_tech", label: "Cardiac Care & Cardiovascular Technology (B.Sc)", tag: "cardiac_tech_interest" },
+        { id: "allied_medical_imaging", label: "Medical Imaging Technology & Radiology (B.Sc)", tag: "medical_imaging_interest" },
+        { id: "allied_neuro_tech", label: "Neurophysiology Technology & Diagnostics (B.Sc)", tag: "neurophysio_interest" },
+        { id: "allied_general_tech", label: "Allied Health Sciences (Dialysis, OT/Anaesthesia, PA, Optometry, MLT)", tag: "allied_health_interest" },
         { id: "biotech_research", label: "Biotech & Genetic Lab Research", tag: "biotech_interest" },
-        { id: "pharma_drug", label: "Pharmacy & Drug Development", tag: "pharmacy_interest" },
-        { id: "physio_rehab", label: "Physiotherapy & Sports Recovery", tag: "physio_interest" },
+        { id: "pure_bio_research", label: "Biological Sciences Research (Neuroscience, Microbiology, Genetics)", tag: "pure_bio_research_interest" },
+        { id: "pharma_drug", label: "Pharmacy & Drug Development (B.Pharm)", tag: "pharmacy_interest" },
+        { id: "physio_rehab", label: "Physiotherapy & Sports Recovery (BPT)", tag: "physio_interest" },
         { id: "teaching_bio", label: "Teaching Biology & Lecturing", tag: "teaching_interest" },
         { id: "healthtech_digital", label: "HealthTech Apps & Telemedicine", tag: "healthtech_interest" }
       ]
@@ -211,10 +223,12 @@ window.STREAM_QUESTIONS = {
       subtitle: "Select interdisciplinary or focused science paths.",
       type: "multi",
       options: [
-        { id: "pcmb_medicine", label: "Clinical Medicine & Doctor Focus", tag: "medicine_interest" },
+        { id: "pcmb_medicine", label: "Clinical Medicine & Doctor Focus (MBBS / Specialisations)", tag: "medicine_interest" },
+        { id: "pcmb_allied_health", label: "Allied Health Sciences (Cardiac, Imaging, Dialysis Tech, PA)", tag: "allied_health_interest" },
         { id: "pcmb_engineering", label: "Engineering & Applied Tech Focus", tag: "engineering_interest" },
         { id: "pcmb_bioinfo", label: "Bioinformatics & DNA Data Analysis", tag: "bioinfo_interest" },
         { id: "pcmb_biomed", label: "Medical Devices & Artificial Organs", tag: "biomedical_interest" },
+        { id: "pcmb_pure_science", label: "Pure Physics, Chemistry or Biological Research", tag: "pure_science_interest" },
         { id: "pcmb_aviation_pilot", label: "Commercial Pilot or Aerospace", tag: "pilot_interest" },
         { id: "pcmb_teaching", label: "STEM Teacher or Researcher", tag: "teaching_interest" }
       ]
@@ -228,10 +242,11 @@ window.STREAM_QUESTIONS = {
       subtitle: "Select computing areas you want to build with.",
       type: "multi",
       options: [
-        { id: "software_apps", label: "Software Engineering & Cloud Apps", tag: "software_coding_interest" },
+        { id: "software_apps", label: "Software Engineering & Cloud Apps (B.Tech / B.Sc / BCA)", tag: "software_coding_interest" },
         { id: "ai_algorithms", label: "AI & Machine Learning", tag: "ai_ml_interest" },
         { id: "data_analytics", label: "Data Science & Big Data", tag: "data_science_interest" },
         { id: "cyber_security", label: "Cybersecurity & Ethical Hacking", tag: "cybersecurity_interest" },
+        { id: "bsc_bca_pathway", label: "B.Sc Computer Science / BCA & Systems Architecture", tag: "bsc_cs_interest" },
         { id: "game_ui", label: "UI/UX & Product Design", tag: "ui_ux_interest" },
         { id: "teaching_coding", label: "Teaching Coding & EdTech", tag: "teaching_interest" },
         { id: "defence_cyber", label: "Defence Cyber & Military Encryption", tag: "defence_tech_interest" }
@@ -243,13 +258,17 @@ window.STREAM_QUESTIONS = {
     {
       id: "commerce_subject_depth",
       question: "Which business field fits your goal?",
-      subtitle: "Select financial or management domains.",
+      subtitle: "Select financial, accounting or management domains.",
       type: "multi",
       options: [
         { id: "accounting_audit", label: "Chartered Accountancy (CA) & Audit", tag: "ca_accounting_interest" },
+        { id: "cma_costing", label: "Cost & Management Accountancy (CMA) - ICMAI", tag: "cma_interest" },
         { id: "stock_markets", label: "Investment Banking & Stocks", tag: "finance_stock_interest" },
+        { id: "banking_wealth", label: "Commercial Banking & Wealth Management", tag: "banking_interest" },
+        { id: "economics_analyst_opt", label: "Economics & Public Policy Analysis", tag: "economics_interest" },
+        { id: "business_analytics_opt", label: "Business Analytics & Enterprise Intelligence", tag: "business_analytics_interest" },
         { id: "actuarial_risk", label: "Actuarial Science & Risk Math", tag: "actuarial_interest" },
-        { id: "business_mgmt", label: "Business Operations & Retail", tag: "business_sales_interest" },
+        { id: "business_mgmt", label: "Business Administration & Management (BBA)", tag: "business_sales_interest" },
         { id: "fintech_startups", label: "FinTech & Tech Startups", tag: "fintech_interest" },
         { id: "law_governance", label: "Corporate Law & Business Rules", tag: "corporate_law_interest" }
       ]
@@ -264,14 +283,17 @@ window.STREAM_QUESTIONS = {
       type: "multi",
       options: [
         { id: "arts_law", label: "Law & Legal Advocacy", tag: "law_interest" },
+        { id: "arts_psychology", label: "Psychology & Behavioral Counselling", tag: "psychology_interest" },
         { id: "arts_civils", label: "Civil Services (IAS/IPS) & Polity", tag: "civils_interest" },
         { id: "arts_policy", label: "Public Policy & International Diplomacy", tag: "policy_interest" },
         { id: "arts_journalism", label: "Journalism & News Reporting", tag: "journalism_interest" },
         { id: "arts_acting", label: "Acting, Theatre & Performance Arts", tag: "acting_interest" },
-        { id: "arts_camera", label: "Cinematography, Photography & Camera Work", tag: "camera_interest" },
-        { id: "arts_filmmaking", label: "Film Direction, Screenwriting & Storytelling", tag: "filmmaking_interest" },
+        { id: "arts_photography", label: "Professional Photography & Visual Media", tag: "commercial_photography_interest" },
+        { id: "arts_camera", label: "Cinematography & Video Camera Operation", tag: "camera_interest" },
+        { id: "arts_filmmaking", label: "Film Direction, Screenwriting & Cinema Production", tag: "filmmaking_interest" },
+        { id: "arts_animation", label: "3D Animation, VFX & Visual Arts", tag: "animation_interest" },
         { id: "arts_music", label: "Music, Singing & Sound Production", tag: "music_interest" },
-        { id: "arts_ui_ux", label: "Graphic Design, Animation & UI/UX", tag: "ui_ux_interest" },
+        { id: "arts_ui_ux", label: "Graphic Design, Branding & UI/UX", tag: "ui_ux_interest" },
         { id: "arts_teaching", label: "Teaching History, Literature or Social Science", tag: "teaching_interest" }
       ]
     }
