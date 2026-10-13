@@ -22,67 +22,88 @@
           <div class="hero-bg-glow"></div>
 
           <div class="container hero-content">
-            <!-- 3D Logo Showcase -->
-            <div class="hero-logo-badge">
-              ${logoHtml}
+            <div class="hero-grid-2col">
+              <!-- Left Column: Hero Copy & Actions -->
+              <div class="hero-text-col text-left">
+                <div class="badge-pill hero-pill mb-4">
+                  <span class="pulse-dot"></span>
+                  <span>AI-POWERED EXPLORATION FOR CLASS 12 STUDENTS IN INDIA</span>
+                </div>
+
+                <h1 class="hero-headline">
+                  You don't need to know your future.<br />
+                  <span class="hero-headline-highlight">You just need to discover where to start.</span>
+                </h1>
+
+                <p class="hero-supporting-text">
+                  Explore your strengths, interests and possibilities — then build a path worth exploring.
+                </p>
+
+                <div class="hero-cta-group">
+                  <button class="primary-btn hero-cta-primary" data-view="assessment">
+                    <span class="btn-glow"></span>
+                    <span>Start Exploring</span>
+                    <span class="btn-arrow">→</span>
+                  </button>
+
+                  <a href="#how-it-works" class="secondary-btn hero-cta-secondary">
+                    <span>▶ How It Works</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Right Column: Student Hero Illustration -->
+              <div class="hero-illustration-col text-center">
+                <div class="hero-illustration-container">
+                  <picture>
+                    <source srcset="assets/hero-student.webp" type="image/webp" />
+                    <img src="assets/hero-student.png" alt="Class 12 student exploring career pathways" class="hero-student-img" width="560" height="418" loading="eager" />
+                  </picture>
+                  <div class="hero-illustration-ambient-glow"></div>
+                </div>
+              </div>
             </div>
 
-            <div class="badge-pill hero-pill mb-4">
-              <span class="pulse-dot"></span>
-              <span>AI-POWERED EXPLORATION FOR CLASS 12 STUDENTS IN INDIA</span>
-            </div>
-
-            <h1 class="hero-headline">
-              You don't need to know your future.<br />
-              <span class="hero-headline-highlight">You just need to discover where to start.</span>
-            </h1>
-
-            <p class="hero-supporting-text">
-              Explore your strengths, interests and possibilities — then build a path worth exploring.
-            </p>
-
-            <div class="hero-cta-group">
-              <button class="primary-btn hero-cta-primary" data-view="assessment">
-                <span class="btn-glow"></span>
-                <span>Start Exploring</span>
-                <span class="btn-arrow">→</span>
-              </button>
-
-              <a href="#how-it-works" class="secondary-btn hero-cta-secondary">
-                <span>How It Works</span>
-              </a>
-            </div>
-
-            <!-- 5-Step Process Bar -->
+            <!-- 5-Step Process Bar with Glowing Badges -->
             <div class="process-flow-bar mt-12" id="how-it-works">
               <div class="process-step">
-                <span class="step-num">01</span>
-                <span class="step-name">ASSESS</span>
-                <span class="step-desc">Class 12 Stream & Signals</span>
+                <div class="process-icon-badge">
+                  <span class="process-icon">📄</span>
+                </div>
+                <span class="step-num">1. ASSESS</span>
+                <span class="step-desc">Stream, interests & strengths</span>
               </div>
-              <div class="process-arrow">→</div>
+              <div class="process-arrow">›</div>
               <div class="process-step">
-                <span class="step-num">02</span>
-                <span class="step-name">ANALYSE</span>
-                <span class="step-desc">Strengths & Preferences</span>
+                <div class="process-icon-badge">
+                  <span class="process-icon">📊</span>
+                </div>
+                <span class="step-num">2. ANALYSE</span>
+                <span class="step-desc">Smart, balanced scoring</span>
               </div>
-              <div class="process-arrow">→</div>
+              <div class="process-arrow">›</div>
               <div class="process-step">
-                <span class="step-num">03</span>
-                <span class="step-name">EXPLORE</span>
-                <span class="step-desc">3–5 Recommended Paths</span>
+                <div class="process-icon-badge">
+                  <span class="process-icon">🧭</span>
+                </div>
+                <span class="step-num">3. EXPLORE</span>
+                <span class="step-desc">Discover suitable careers</span>
               </div>
-              <div class="process-arrow">→</div>
+              <div class="process-arrow">›</div>
               <div class="process-step">
-                <span class="step-num">04</span>
-                <span class="step-name">EXPERIENCE</span>
-                <span class="step-desc">Interactive Mini-Challenges</span>
+                <div class="process-icon-badge">
+                  <span class="process-icon">🎮</span>
+                </div>
+                <span class="step-num">4. EXPERIENCE</span>
+                <span class="step-desc">Try mini challenges</span>
               </div>
-              <div class="process-arrow">→</div>
+              <div class="process-arrow">›</div>
               <div class="process-step">
-                <span class="step-num">05</span>
-                <span class="step-name">ROADMAP</span>
-                <span class="step-desc">Actionable Class 12+ Plan</span>
+                <div class="process-icon-badge">
+                  <span class="process-icon">🗺️</span>
+                </div>
+                <span class="step-num">5. ROADMAP</span>
+                <span class="step-desc">Plan your next steps</span>
               </div>
             </div>
           </div>

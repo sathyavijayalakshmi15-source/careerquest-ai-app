@@ -4,6 +4,21 @@
   let currentCategoryFilter = "all";
   let currentSearchQuery = "";
 
+  const CATEGORY_ICONS = {
+    "Technology": "💻",
+    "Engineering": "⚙️",
+    "Medical & Healthcare": "🩺",
+    "Defence": "🎖️",
+    "Aviation": "✈️",
+    "Science & Research": "🔬",
+    "Commerce & Finance": "📈",
+    "Law & Government": "⚖️",
+    "Education": "🎓",
+    "Creative & Media": "🎨",
+    "Maritime": "⚓",
+    "Emerging": "🚀"
+  };
+
   function renderExplorer() {
     const categories = [
       { id: "all", label: "All Sectors" },
@@ -92,10 +107,15 @@
       return;
     }
 
-    container.innerHTML = filtered.map(c => `
+    container.innerHTML = filtered.map(c => {
+      const catIcon = CATEGORY_ICONS[c.category] || "🎯";
+      return `
       <div class="explorer-card glass-panel card-tilt" data-inspect-career="${c.id}">
         <div class="explorer-card-header">
-          <span class="category-pill">${c.category}</span>
+          <div class="explorer-card-cat-group">
+            <span class="category-icon-glow">${catIcon}</span>
+            <span class="category-pill">${c.category}</span>
+          </div>
         </div>
         <h3 class="explorer-card-title mt-2">${c.name}</h3>
         <p class="explorer-card-desc mt-2">${c.description.substring(0, 110)}...</p>
@@ -109,7 +129,7 @@
           <span>→</span>
         </button>
       </div>
-    `).join("");
+    `;}).join("");
 
     // Add click listeners to cards
     container.querySelectorAll('[data-inspect-career]').forEach(el => {

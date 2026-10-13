@@ -141,7 +141,7 @@
       const isActive = ch.id === selectedChallengeId;
       return `
         <button class="challenge-tab-btn ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}" data-select-challenge="${ch.id}">
-          <span class="ch-icon">${ch.icon}</span>
+          <div class="ch-icon-glow">${ch.icon}</div>
           <span class="ch-title">${ch.title}</span>
           ${isCompleted ? '<span class="ch-badge">Completed ✓</span>' : ''}
         </button>
@@ -183,8 +183,13 @@
           <!-- Right Column: Active Challenge Arena -->
           <div class="challenge-arena glass-panel" id="challengeArena">
             <div class="arena-header">
-              <span class="category-pill">${activeChallenge.category}</span>
-              ${isCompleted ? '<span class="completed-pill">Badge Earned ✓</span>' : ''}
+              <div class="arena-header-top flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="arena-domain-badge-circle">${activeChallenge.icon}</span>
+                  <span class="category-pill">${activeChallenge.category}</span>
+                </div>
+                ${isCompleted ? '<span class="completed-pill">Badge Earned ✓</span>' : ''}
+              </div>
               <h2 class="arena-title mt-2">${activeChallenge.title}</h2>
               <p class="arena-desc">${activeChallenge.description}</p>
             </div>

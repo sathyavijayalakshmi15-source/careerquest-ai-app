@@ -27,7 +27,7 @@
     const topMatchesHtml = topMatches.map((m, idx) => `
       <div class="dash-career-row glass-panel mb-3">
         <div class="dash-career-info">
-          <span class="rank-tag">#0${idx + 1}</span>
+          <div class="rank-badge-glow">#0${idx + 1}</div>
           <div class="dash-career-text">
             <h4 class="dash-career-title">${m.career.name}</h4>
             <span class="dash-career-cat">${m.career.category} • <strong class="text-red-glow">${m.matchPercent}% Match Fit</strong></span>
@@ -69,30 +69,42 @@
         </div>
 
         ${!hasProfile ? `
-          <div class="dash-no-profile-box glass-panel text-center py-12 mb-8">
-            <span class="dash-empty-icon">📝</span>
+          <div class="dash-no-profile-box glass-panel text-center py-12 mb-8 relative overflow-hidden">
+            <div class="dash-empty-glow"></div>
+            <div class="dash-empty-badge-circle">
+              <span class="dash-empty-icon">🧭</span>
+            </div>
             <h3 class="mt-4">Assessment Not Yet Completed</h3>
             <p class="text-muted max-w-md mx-auto mt-2">Take the Class 12 stream assessment to generate your personalized 3–5 Careers Worth Exploring.</p>
-            <button class="primary-btn mt-6" data-view="assessment" id="dashStartExploringBtn">Start Exploring →</button>
+            <button class="primary-btn mt-6" data-view="assessment" id="dashStartExploringBtn">
+              <span class="btn-glow"></span>
+              <span>Start Exploring →</span>
+            </button>
           </div>
         ` : ''}
 
         <!-- Top Metrics Cards Grid -->
         <div class="dash-metrics-grid col-3 mb-8">
           <div class="metric-card glass-panel text-center card-tilt">
-            <span class="metric-icon">🎓</span>
+            <div class="metric-icon-circle">
+              <span class="metric-icon">🎓</span>
+            </div>
             <span class="metric-val text-ellipsis">${streamObj ? streamObj.title : 'Not Set'}</span>
             <span class="metric-label">Class 12 Stream</span>
           </div>
 
           <div class="metric-card glass-panel text-center card-tilt">
-            <span class="metric-icon">🏆</span>
+            <div class="metric-icon-circle">
+              <span class="metric-icon">🏆</span>
+            </div>
             <span class="metric-val">${completedChallenges.length} Badges</span>
             <span class="metric-label">Completed Mini-Challenges</span>
           </div>
 
           <div class="metric-card glass-panel text-center card-tilt">
-            <span class="metric-icon">🗺️</span>
+            <div class="metric-icon-circle">
+              <span class="metric-icon">🗺️</span>
+            </div>
             <span class="metric-val">${completedRoadmapCount} Milestones</span>
             <span class="metric-label">Roadmap Steps Completed</span>
           </div>

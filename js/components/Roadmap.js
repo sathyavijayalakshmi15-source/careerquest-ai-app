@@ -110,8 +110,10 @@
       return `
         <div class="roadmap-phase-node glass-panel mb-6">
           <div class="phase-node-header">
-            <span class="phase-num-badge">0${pIdx + 1}</span>
-            <span class="phase-icon">${phase.icon}</span>
+            <div class="phase-milestone-badge">
+              <span class="phase-milestone-icon">${phase.icon}</span>
+              <span class="phase-num-badge">0${pIdx + 1}</span>
+            </div>
             <h3 class="phase-title">${phase.title}</h3>
           </div>
           <ul class="roadmap-steps-list mt-4">
