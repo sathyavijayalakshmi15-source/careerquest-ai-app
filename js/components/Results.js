@@ -14,12 +14,16 @@
 
     // Ultimate fallback guarantee: if topMatches is still empty, populate from CAREERS_DATABASE
     if (topMatches.length === 0 && window.CAREERS_DATABASE && window.CAREERS_DATABASE.length > 0) {
-      topMatches = window.CAREERS_DATABASE.slice(0, 5).map(c => ({
+      const streamCompatible = window.CAREERS_DATABASE.filter(c => 
+        (c.streamCompatibility && (c.streamCompatibility.includes(stream) || c.streamCompatibility.includes("all")))
+      );
+      const fallbackList = streamCompatible.length >= 3 ? streamCompatible.slice(0, 5) : window.CAREERS_DATABASE.slice(0, 5);
+      topMatches = fallbackList.map(c => ({
         career: c,
-        matchScore: 60,
-        matchPercent: "60%",
+        matchScore: 65,
+        matchPercent: "65%",
         matchLabel: "Good Pathway to Explore",
-        reasons: ["Appeared as a directional pathway worth exploring."]
+        reasons: [`Compatible directional pathway for ${streamObj ? streamObj.title : (stream || "your")} stream.`]
       }));
     }
 
@@ -50,11 +54,14 @@
 
     // Clean, focused result cards
     const careerCardsHtml = topMatches.map((item, index) => {
-      const { career, matchPercent, reasons = [] } = item;
-      if (!career) return "";
+      if (!item) return "";
+      const career = item.career || item;
+      if (!career || !career.id) return "";
 
-      const matchTierLabel = item.matchLabel || "Strong Match to Explore";
+      const matchPercent = item.matchPercent || `${item.matchScore || career.matchScore || 65}%`;
+      const matchTierLabel = item.matchLabel || (parseInt(matchPercent) >= 85 ? "Strong Match to Explore" : (parseInt(matchPercent) >= 75 ? "Promising Pathway" : "Good Pathway to Explore"));
 
+      const reasons = item.reasons || item.matchReasonList || career.reasons || [];
       const safeReasons = (reasons && reasons.length > 0) ? reasons : ["Appeared based on broad compatibility with your reported preferences."];
       const reasonsHtml = safeReasons.map(r => `
         <li><span class="reason-bullet">✦</span> ${r}</li>

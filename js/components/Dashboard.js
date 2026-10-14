@@ -24,26 +24,31 @@
 
     const logoHtml = window.CQ_LOGO ? window.CQ_LOGO.renderLogo({ size: "large", showText: true, animated: true }) : "";
 
-    const topMatchesHtml = topMatches.map((m, idx) => `
+    const topMatchesHtml = topMatches.map((m, idx) => {
+      const career = m.career || m;
+      if (!career) return "";
+      const matchPercent = m.matchPercent || `${m.matchScore || 65}%`;
+      return `
       <div class="dash-career-row glass-panel mb-3">
         <div class="dash-career-info">
           <div class="rank-badge-glow">#0${idx + 1}</div>
           <div class="dash-career-text">
-            <h4 class="dash-career-title">${m.career.name}</h4>
-            <span class="dash-career-cat">${m.career.category} • <strong class="text-red-glow">${m.matchPercent}% Match Fit</strong></span>
+            <h4 class="dash-career-title">${career.name}</h4>
+            <span class="dash-career-cat">${career.category || 'Exploration'} • <strong class="text-red-glow">${matchPercent} Match Fit</strong></span>
           </div>
         </div>
 
         <div class="dash-career-actions mt-2-mobile">
-          <button class="tertiary-btn btn-sm" data-dash-experience="${m.career.id}">
+          <button class="tertiary-btn btn-sm" data-dash-experience="${career.id}">
             <span>⚡ Challenge</span>
           </button>
-          <button class="secondary-btn btn-sm" data-dash-roadmap="${m.career.id}">
+          <button class="secondary-btn btn-sm" data-dash-roadmap="${career.id}">
             <span>🗺️ Roadmap</span>
           </button>
         </div>
       </div>
-    `).join("");
+      `;
+    }).join("");
 
     return `
       <div class="dashboard-page-wrapper container section-padding dash-animated-entrance">

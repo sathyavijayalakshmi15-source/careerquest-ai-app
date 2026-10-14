@@ -454,6 +454,21 @@ medicine_found = any(c[0] in ["medicine", "cardiac_technology", "neurology_speci
 assert not medicine_found, f"PCM student without Bio should not get clinical medicine in top 5!"
 print("[Test 13] Hard Stream Gate: PCM student cannot get clinical medicine without Bio: [OK] PASS")
 
+# Test 14: User failing profile: Science - Computer Science + Maths with software coding
+t14 = match_careers("cs_maths", streamAnswers=["software_coding_interest"], strengths=["teamwork", "mentoring_others"], extracurriculars=["art_drawing", "music", "teaching_tutoring"])
+print("\n[Test 14] CS/Maths + Teamwork/Mentoring + Art/Music/Tutoring + Software coding:")
+for r in t14: print(f"  #{r[0]}: {r[1]} ({r[2]}%)")
+assert t14[0][0] in ["cs_software", "bsc_computer_science"], f"Expected software/CS career as #1, got {t14[0][0]}"
+print("  [OK] PASS")
+
+# Test 15: User profile with empty streamAnswers (evaluating stream, strengths, extracurriculars)
+t15 = match_careers("cs_maths", streamAnswers=[], strengths=["teamwork", "mentoring_others"], extracurriculars=["art_drawing", "music", "teaching_tutoring"])
+print("\n[Test 15] CS/Maths + Teamwork/Mentoring + Art/Music/Tutoring (Empty streamAnswers):")
+for r in t15: print(f"  #{r[0]}: {r[1]} ({r[2]}%)")
+cs_pathways_in_top = any(c[0] in ["cs_software", "bsc_computer_science", "cs_educator", "ui_ux_design", "ai_ml"] for c in t15)
+assert cs_pathways_in_top, f"Expected relevant CS/computing pathways in top 5, got {[c[0] for c in t15]}"
+print("  [OK] PASS")
+
 print("\n" + "="*60)
-print("ALL 13 COMPREHENSIVE TEST SUITE SCENARIOS PASSED 100%!")
+print("ALL 15 COMPREHENSIVE TEST SUITE SCENARIOS PASSED 100%!")
 print("="*60)

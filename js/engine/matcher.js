@@ -504,9 +504,24 @@
         score += 55; hasExplicitMatch = true; signalsFound.push("Selected STEM Education & Academic Lecturing");
       }
 
+      // Academic stream alignment for Science - Computer Science + Maths
+      if (stream === "cs_maths" && ["cs_software", "bsc_computer_science", "ai_ml", "bca_applications"].includes(career.id)) {
+        score += 10;
+        signalsFound.push("Aligned with core Computer Science & Mathematics stream foundations");
+      }
+
       // -----------------------------------------------------------------
       // 3. SECONDARY SIGNALS: NATURAL STRENGTHS (+10 PTS)
       // -----------------------------------------------------------------
+      if (strengthSet.has("teamwork") && ["cs_software", "web_app_developer", "cloud_devops", "robotics_automation"].includes(career.id)) {
+        score += 8; signalsFound.push("Teamwork strength aligns with collaborative agile engineering teams");
+      }
+      if ((strengthSet.has("mentoring_others") || extraSet.has("teaching_tutoring")) && ["cs_educator", "science_stem_educator"].includes(career.id)) {
+        score += 20; signalsFound.push("Mentoring and tutoring experience directly empowers STEM & Coding education");
+      }
+      if (extraSet.has("art_drawing") && ["cs_maths", "pcm"].includes(stream) && career.id === "ui_ux_design") {
+        score += 15; signalsFound.push("Art & Sketching combined with Computer Science forms the ideal foundation for UI/UX & Product Design");
+      }
       if (strengthSet.has("problem_solving") && ["cs_software", "ai_ml", "cybersecurity", "mechanical", "aerospace", "bsc_computer_science", "bca_applications"].includes(career.id)) {
         score += 10; signalsFound.push("Problem Solving matches core engineering & algorithmic demands");
       }
@@ -619,10 +634,22 @@
         }
       }
 
+      const matchLabel = matchScore >= 85 ? "Strong Fit to Explore" : (matchScore >= 75 ? "Promising Pathway" : "Good Pathway to Explore");
+      const matchPercent = `${matchScore}%`;
+      const reasons = Array.from(new Set(signalsFound));
+
       scoredCareers.push({
-        ...career,
+        career,
         matchScore,
-        matchReasonList: signalsFound,
+        matchPercent,
+        matchLabel,
+        reasons,
+        matchReasonList: reasons,
+        id: career.id,
+        name: career.name,
+        category: career.category,
+        description: career.description,
+        streamCompatibility: career.streamCompatibility,
         rawScore: score
       });
     });
@@ -635,7 +662,21 @@
       return b.rawScore - a.rawScore;
     });
 
-    const topMatches = scoredCareers.slice(0, 5);
+    let topMatches = scoredCareers.slice(0, 5);
+
+    // Safety fallback: Ensure top 3–5 relevant, eligible careers are always selected
+    if (topMatches.length === 0 || topMatches[0].matchScore < 40) {
+      const streamCompatible = scoredCareers.filter(item => 
+        (item.career.streamCompatibility && (item.career.streamCompatibility.includes(stream) || item.career.streamCompatibility.includes("all")))
+      );
+      const fallbackPool = streamCompatible.length >= 3 ? streamCompatible : scoredCareers;
+      topMatches = fallbackPool.slice(0, 5).map(item => ({
+        ...item,
+        matchScore: Math.max(item.matchScore, 65),
+        matchPercent: `${Math.max(item.matchScore, 65)}%`,
+        matchLabel: item.matchLabel || "Good Pathway to Explore"
+      }));
+    }
 
     return {
       topMatches,

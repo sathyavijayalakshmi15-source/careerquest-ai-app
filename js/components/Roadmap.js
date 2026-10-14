@@ -8,16 +8,17 @@
     const savedProgress = state.roadmapProgress || {};
 
     // Default to first match if available, or default career
+    const firstMatch = topMatches.length > 0 ? (topMatches[0].career || topMatches[0]) : null;
     if (!selectedRoadmapCareerId) {
-      selectedRoadmapCareerId = topMatches.length > 0 ? topMatches[0].career.id : "cs_software";
+      selectedRoadmapCareerId = firstMatch ? firstMatch.id : "cs_software";
     }
 
     const currentCareer = window.getCareerById ? window.getCareerById(selectedRoadmapCareerId) : null;
-    const careerObj = currentCareer || (topMatches[0] ? topMatches[0].career : window.CAREERS_DATABASE[0]);
+    const careerObj = currentCareer || firstMatch || (window.CAREERS_DATABASE && window.CAREERS_DATABASE[0]);
 
     // Dropdown options
-    const dropdownOptionsHtml = (topMatches.length > 0 ? topMatches.map(m => m.career) : window.CAREERS_DATABASE.slice(0, 10)).map(c => `
-      <option value="${c.id}" ${c.id === careerObj.id ? 'selected' : ''}>${c.name} (${c.category})</option>
+    const dropdownOptionsHtml = (topMatches.length > 0 ? topMatches.map(m => m.career || m) : (window.CAREERS_DATABASE || []).slice(0, 10)).filter(Boolean).map(c => `
+      <option value="${c.id}" ${c.id === (careerObj ? careerObj.id : '') ? 'selected' : ''}>${c.name} (${c.category})</option>
     `).join("");
 
     // Generate Roadmap Phases
